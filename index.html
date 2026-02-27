@@ -597,8 +597,8 @@
 </div>
 
 <style>
-#grid-gallery-container .gallerySwiper { width: 100%; height: 600px; padding: 40px !important; }
-#grid-gallery-container .swiper-slide { height: calc((100% - 40px) / 3) !important; display: flex; justify-content: center; align-items: center; transform: scale(1) !important; opacity: 1 !important; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+#grid-gallery-container .gallerySwiper { width: 100%; height: auto; padding: 40px 40px !important; }
+#grid-gallery-container .swiper-slide { height: auto !important; display: flex; justify-content: center; align-items: center; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
 #grid-gallery-container .swiper-slide-active { transform: scale(1) !important; }
 .question-card { width: 100%; height: 100%; border-radius: 12px; position: relative; cursor: pointer; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transform: scale(0.7); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); border: 2px solid transparent; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 15px; }
 .question-card:hover { transform: scale(1.15); z-index: 999; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border-color: rgba(255, 255, 255, 1); }
@@ -607,7 +607,7 @@
 .custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999999; justify-content: center; align-items: center; }
 .custom-modal.is-visible { display: flex; }
 .modal-backdrop { position: absolute; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
-.modal-container { position: relative; width: 90%; max-width: 900px; height: 85vh; background: white; border-radius: 8px; display: flex; flex-direction: column; z-index: 1000; animation: zoomIn 0.2s ease; }
+.modal-container { position: relative; width: 99%; max-width: 2080px; height: auto; max-height: 90vh; background: white; border-radius: 8px; display: flex; flex-direction: column; z-index: 1000; animation: zoomIn 0.2s ease; }
 @keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 .modal-header { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; background: #f9f9f9; }
 .modal-body { flex: 1; overflow-y: auto; background: #fff; }
@@ -619,36 +619,66 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   const items = [
-    { id: '01', q: "How does 6G mitigate latency in URLLC?", color: "135deg, #FF9A9E, #FECFEF" },
-    { id: '02', q: "Impact of pilot contamination?", color: "135deg, #a18cd1, #fbc2eb" },
-    { id: '03', q: "Energy efficiency optimization?", color: "135deg, #84fab0, #8fd3f4" },
-    { id: '04', q: "HWI bottlenecks identification?", color: "120deg, #f6d365, #fda085" },
-    { id: '05', q: "Deep Unfolding vs Traditional?", color: "135deg, #667eea, #764ba2" },
-    { id: '06', q: "Robustness in MIMO systems?", color: "135deg, #43e97b, #38f9d7" },
-    { id: '07', q: "Graph Neural Networks utility?", color: "135deg, #fa709a, #fee140" },
-    { id: '08', q: "Non-stationary channels?", color: "135deg, #30cfd0, #330867" },
-    { id: '09', q: "Scalability of Cell-Free?", color: "135deg, #c471f5, #fa71cd" },
-    { id: '10', q: "Zero-touch management?", color: "135deg, #4facfe, #00f2fe" },
-    { id: '11', q: "Security constraints?", color: "135deg, #f093fb, #f5576c" },
-    { id: '12', q: "Spectral efficiency future?", color: "135deg, #89f7fe, #66a6ff" },
-    { id: '13', q: "AI-native air interface?", color: "135deg, #FF9A9E, #FECFEF" },
-    { id: '14', q: "Semantic communication?", color: "135deg, #a18cd1, #fbc2eb" },
-    { id: '15', q: "THz band propagation?", color: "135deg, #84fab0, #8fd3f4" },
-    { id: '16', q: "Digital Twin networks?", color: "120deg, #f6d365, #fda085" },
+    { id: '1', q: "Creative Cluster Resilience", color: "135deg, #FF9A9E, #FECFEF" },
+    { id: '2', q: "SGRMs: Molecular Dissociation", color: "135deg, #a18cd1, #fbc2eb" },
+    { id: '3', q: "Provenance Premium", color: "135deg, #84fab0, #8fd3f4" },
+    { id: '4', q: "The Volatility Wall", color: "120deg, #f6d365, #fda085" },
+    { id: '5', q: "AI for Urban Mobility", color: "135deg, #667eea, #764ba2" },
+    { id: '6', q: "Sacred to Spectacle", color: "135deg, #43e97b, #38f9d7" },
+    { id: '7', q: "DRL-Governed Reconfigurable Hybrid Interconnects", color: "135deg, #fa709a, #fee140" },
+    { id: '8', q: "Neutralizing Toxic Latency Arbitrage", color: "135deg, #30cfd0, #330867" },
+    { id: '9', q: "AI Agent Reductionism in ABMs", color: "135deg, #c471f5, #fa71cd" },
   ];
 
   const wrapper = document.getElementById('gallery-wrapper');
   let html = '';
 
   items.forEach(item => {
-    const reportImg = item.id % 2 === 0 ? 'figures/web_report.png' : 'figures/web_question.png';
+    // 获取图片路径，比如 figures/r1.png
+    const reportImg = item.imgPath ? item.imgPath : `figures/r${item.id}.png`;
+    
     html += `
-      <div class="swiper-slide">
+      <div class="swiper-slide" style="padding: 10px;">
         <div class="question-card" 
-             style="background: linear-gradient(${item.color});"
-             onclick="openModal('${reportImg}', 'Case #${item.id}')">
-          <div class="question-id">Case #${item.id}</div>
-          <div class="question-text">${item.q}</div>
+             style="
+                position: relative;
+                overflow: hidden;
+                cursor: pointer;
+                background-image: url('${reportImg}');
+                background-size: cover;
+                background-position: top center;
+                height: 0 !important; 
+                padding-bottom: 75% !important; /* 利用 padding-bottom 实现严格的 4:3 比例 */
+                display: block !important; /* 覆盖旧的 flex 布局 */
+             "
+             onclick="openModal('${reportImg}', 'Report #0${item.id}')">
+             
+          <div style="
+                position: absolute;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: linear-gradient(${item.color});
+                mix-blend-mode: hard-light; /* 关键：让彩色和底图混合透出细节 */
+                
+                /* 新增下面这两行来实现模糊效果 */
+                backdrop-filter: blur(2px); 
+                -webkit-backdrop-filter: blur(2px); /* 专门兼容 Safari 浏览器 */
+                
+                z-index: 1;
+                pointer-events: none;
+          "></div>
+          
+          <div style="
+                position: absolute;
+                bottom: 20px;
+                left: 20px;
+                z-index: 2;
+                text-align: left;
+                pointer-events: none;
+          ">
+            <div class="question-id" style="color: black; font-size: 4.1rem; margin-bottom: 5px; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">Report ${item.id}</div>
+            <div class="question-text" style="color: black; font-size: 4.1rem; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${item.q}</div>
+          </div>
+          
         </div>
       </div>
     `;
@@ -656,17 +686,20 @@ document.addEventListener('DOMContentLoaded', function () {
   wrapper.innerHTML = html;
 
   const swiper = new Swiper(".gallerySwiper", {
-    slidesPerView: 3,
-    grid: { rows: 3, fill: 'row' },
-    spaceBetween: 20,
-    autoplay: { delay: 2000, disableOnInteraction: false, pauseOnMouseEnter: true },
-    centeredSlides: false, 
-    slidesPerGroup: 1,
-    pagination: { el: ".swiper-pagination", clickable: true },
+    slidesPerView: 1, 
+    spaceBetween: 40, // 增加卡片之间的间距，视觉上更舒展
+    autoplay: { delay: 3000, disableOnInteraction: false, pauseOnMouseEnter: true },
+    loop: true, // 开启无限循环滚动
+    pagination: { el: ".swiper-pagination", clickable: true, dynamicBullets: true },
     breakpoints: {
-      0: { slidesPerView: 1, grid: { rows: 3 } },
-      768: { slidesPerView: 2, grid: { rows: 3 } },
-      1024: { slidesPerView: 3, grid: { rows: 3 } }
+      768: { 
+        slidesPerView: 1.5, // 平板端显示 1 个完整的 + 半个露出的
+        centeredSlides: true 
+      },
+      1200: { 
+        slidesPerView: 2, // 宽屏电脑端只显示 2 个大卡片（原来是3个），因此尺寸会大幅增加！
+        centeredSlides: false 
+      }
     }
   });
 });
@@ -1042,7 +1075,7 @@ document.addEventListener('keydown', function (e) {
       <div class="swiper-wrapper">
         <div class="swiper-slide">
           <div class="box slider-box">
-             <figure class="image is-16by9"><img src="figures/web_question.png" alt="Editor Workbench"></figure>
+             <figure class="image is-16by9"><img src="figures/ui_3.png" alt="Editor Workbench"></figure>
              <p class="has-text-centered mt-3 mb-1"><strong>Figure 1: Editor Workbench</strong></p>
              <p class="is-size-7 has-text-grey has-text-centered">Formulate complex research plans and initialize agents.</p>
           </div>
@@ -1217,10 +1250,10 @@ document.addEventListener('keydown', function (e) {
       BibTeX
     </h2>
     <pre style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background-color: #f8f9fa; padding: 1.5rem; border: 1px solid #eaeaea;"><code>@article{superresearch2026,
-  author    = {Author Name and Author Name},
-  title     = {Super Research: A High-Stakes Analytics Agent with Graph-Anchored Auditing},
-  journal   = {ArXiv},
-  year      = {2026},
+  title={Super Research: Answering Highly Complex Questions with Large Language Models though Super Deep and Super Wide Research},
+  author={Yubo Dong, Nianhao You, Yuxuan Hou, Zixun Sun, Yue Zhang, Liang Zhang, Siyuan Zhao, Yi Lin, Hehe Fan},
+  journal={ArXiv},
+  year={2026}
 }</code></pre>
   </div>
 </section>
