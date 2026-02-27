@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Research</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/force-graph"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root { --primary: #3b82f6; --glass: rgba(255, 255, 255, 0.95); }
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; height: 100vh; overflow: hidden; color: #1e293b; }
+        
+        /* Layout */
+        .app-grid { display: grid; grid-template-columns: 260px 1fr 400px; grid-template-rows: 60px 1fr; height: 100vh; gap: 12px; padding: 12px; }
+        .glass-panel { background: var(--glass); border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); backdrop-filter: blur(8px); border-radius: 12px; }
+        
+        /* Node Colors */
+        .dot-global { background: #e11d48; box-shadow: 0 0 8px rgba(225, 29, 72, 0.4); }
+        .dot-insight { background: #f59e0b; } /* Intermediate Conclusion */
+        .dot-fact { background: #3b82f6; }
+        .dot-url { background: #94a3b8; }
+
+        /* Interactive */
+        .cite-link { color: var(--primary); font-weight: 600; cursor: pointer; border-bottom: 1px dashed var(--primary); transition: all 0.2s; padding: 0 2px; border-radius: 2px; }
+        .cite-link:hover { background: #eff6ff; border-bottom-style: solid; }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        
+        /* Tooltip */
+        #v-tooltip { position: fixed; background: #ffffff; color: #1e293b; padding: 12px; border-radius: 8px; font-size: 12px; z-index: 99999; display: none; max-width: 320px; pointer-events: none; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); border: 1px solid #e2e8f0; }
+        
+        /* Loading Overlay */
+        .loading-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.95); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .progress-bar { transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        /* Live Console Animation */
+        @keyframes pulse-border { 0% { border-color: #e2e8f0; } 50% { border-color: #818cf8; } 100% { border-color: #e2e8f0; } }
+        .live-active { animation: pulse-border 2s infinite; border-width: 2px; }
+
+        /* --- NeurIPS Style Report CSS --- */
+        .neurips-report {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 18px; /* Slightly larger for screen reading elegance */
+            line-height: 1.65;
+            color: #1a1a1a;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: justify;
+        }
+        .neurips-report h1 { 
+            font-family: "Times New Roman", Times, serif;
+            font-size: 32px; 
+            font-weight: 800; 
+            margin: 40px 0 25px; 
+            letter-spacing: -0.5px; 
+            border-bottom: 3px solid #000; 
+            padding-bottom: 12px; 
+            line-height: 1.2;
+        }
+        .neurips-report h2 { 
+            font-family: "Times New Roman", Times, serif;
+            font-size: 24px; 
+            font-weight: 700; 
+            margin: 35px 0 15px; 
+            letter-spacing: -0.2px; 
+            border-bottom: 1px solid #e5e7eb; 
+            padding-bottom: 6px; 
+        }
+        .neurips-report h3 { 
+            font-family: "Times New Roman", Times, serif;
+            font-size: 20px; 
+            font-weight: 700; 
+            margin: 28px 0 12px; 
+            color: #333;
+        }
+        .neurips-report p { margin-bottom: 20px; }
+        .neurips-report strong { color: #000; font-weight: 700; }
+        .neurips-report ul, .neurips-report ol { margin: 20px 0; padding-left: 30px; }
+        .neurips-report li { margin-bottom: 8px; }
+        .neurips-report blockquote { 
+            border-left: 4px solid #3b82f6; 
+            padding: 12px 20px; 
+            font-style: italic; 
+            color: #4b5563; 
+            margin: 25px 0; 
+            background: #f1f5f9; 
+            border-radius: 4px; 
+        }
+        .neurips-report code {
+            font-family: 'JetBrains Mono', monospace;
+            background: #f1f5f9;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 0.9em;
+            color: #dc2626;
+        }
+        .neurips-report a { color: #2563eb; text-decoration: none; }
+        .neurips-report a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div id="app" class="app-grid relative">
+    <div id="v-tooltip"></div>
+    
+    <div v-if="isLoading" class="loading-overlay flex-col">
+        <div class="w-[500px] bg-white p-8 rounded-2xl shadow-2xl border border-slate-100">
+            <div class="text-center mb-6">
+                <i class="fa-solid fa-microchip fa-spin text-4xl text-indigo-600 mb-4"></i>
+                <h3 class="text-lg font-bold text-slate-800">{{ loadingStatus }}</h3>
+                <p class="text-xs text-slate-400 uppercase tracking-widest mt-1">AI Processing Pipeline</p>
+            </div>
+            
+            <div v-if="progress.total > 0" class="mb-6">
+                <div class="flex justify-between text-xs font-bold text-slate-500 mb-2">
+                    <span>Batch Progress</span>
+                    <span>{{ progress.current }} / {{ progress.total }}</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden border border-slate-200">
+                    <div class="bg-indigo-600 h-full rounded-full progress-bar shadow-[0_0_10px_rgba(79,70,229,0.5)]" :style="{ width: (progress.current / progress.total * 100) + '%' }"></div>
+                </div>
+            </div>
+
+            <div v-if="liveMonitor" class="bg-slate-50 rounded-xl border border-slate-200 p-4 text-left live-active transition-all">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Processing Batch</span>
+                </div>
+                
+                <div class="mb-3">
+                    <p class="text-[10px] font-bold text-indigo-500 uppercase mb-1">Current Batch ({{ liveMonitor.batchSize }} Questions)</p>
+                    <p class="text-xs text-slate-600 font-mono line-clamp-2">{{ liveMonitor.questionIds }}</p>
+                </div>
+
+                <div>
+                    <p class="text-[10px] font-bold text-emerald-600 uppercase mb-1">AI Response Stream</p>
+                    <div class="text-[10px] font-mono text-slate-500 bg-white p-2 rounded border border-slate-100 h-20 overflow-hidden relative">
+                        <span v-if="!liveMonitor.response" class="italic text-slate-400">Waiting for API...</span>
+                        <span v-else>{{ liveMonitor.response }}</span>
+                        <div class="absolute bottom-0 left-0 w-full h-6 bg-gradient-to-t from-white to-transparent"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <button v-if="progress.errors > 0" @click="isLoading=false" class="mt-4 text-xs text-red-500 hover:underline">
+                Stop ({{ progress.errors }} errors occurred)
+            </button>
+        </div>
+    </div>
+
+    <header class="glass-panel col-span-3 flex items-center justify-between px-6 z-50">
+        <div class="flex items-center gap-3">
+            <div class="bg-indigo-600 text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-slate-800 leading-tight">Super Research</h1>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Turbo Batch</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <div class="bg-slate-100 p-1 rounded-lg flex gap-1 border border-slate-200">
+                <button v-for="t in tabs" :key="t.id" @click="currentTab = t.id"
+                    :class="['px-3 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-2', 
+                             currentTab === t.id ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-black/5' : 'text-slate-500 hover:text-slate-700']">
+                    <i :class="t.icon"></i> {{ t.label }}
+                </button>
+            </div>
+            <label class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-bold cursor-pointer transition shadow flex items-center gap-2">
+                <i class="fa-solid fa-upload"></i> Load JSON
+                <input type="file" class="hidden" @change="loadJson" accept=".json">
+            </label>
+        </div>
+    </header>
+
+    <aside class="glass-panel flex flex-col overflow-hidden" v-if="rawData">
+        <div class="p-4 border-b border-slate-100 bg-slate-50/50">
+            <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Overview</h3>
+        </div>
+        <div class="p-4 space-y-6 overflow-y-auto flex-1 custom-scroll">
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-white p-3 rounded-lg border border-slate-100 shadow-sm">
+                    <div class="text-2xl font-bold text-indigo-600">{{ metrics.depth }}</div>
+                    <div class="text-[10px] text-slate-400 font-bold uppercase">Logic Depth</div>
+                </div>
+                <div class="bg-white p-3 rounded-lg border border-slate-100 shadow-sm">
+                    <div class="text-2xl font-bold text-emerald-600">{{ metrics.nodes }}</div>
+                    <div class="text-[10px] text-slate-400 font-bold uppercase">Total Nodes</div>
+                </div>
+                <div class="bg-white p-3 rounded-lg border border-slate-100 shadow-sm">
+                    <div class="text-2xl font-bold text-purple-600">{{ metrics.sources }}</div>
+                    <div class="text-[10px] text-slate-400 font-bold uppercase">Domains</div>
+                </div>
+                <div class="bg-white p-3 rounded-lg border border-slate-100 shadow-sm">
+                    <div class="text-2xl font-bold text-amber-500">${{ metrics.cost }}</div>
+                    <div class="text-[10px] text-slate-400 font-bold uppercase">Cost ($3/1M)</div>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                <h4 class="text-[10px] font-bold text-slate-500 uppercase mb-3 flex justify-between">
+                    <span>Token Usage</span>
+                    <span>{{ formatNumber(metrics.tokens.total) }}</span>
+                </h4>
+                <div class="space-y-2">
+                    <div>
+                        <div class="flex justify-between text-[10px] mb-1 text-slate-400"><span>In</span><span>{{ formatNumber(metrics.tokens.input) }}</span></div>
+                        <div class="w-full bg-slate-200 h-1 rounded-full"><div class="bg-blue-400 h-1 rounded-full" :style="{width: (metrics.tokens.input / metrics.tokens.total * 100) + '%'}"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[10px] mb-1 text-slate-400"><span>Out</span><span>{{ formatNumber(metrics.tokens.output) }}</span></div>
+                        <div class="w-full bg-slate-200 h-1 rounded-full"><div class="bg-emerald-400 h-1 rounded-full" :style="{width: (metrics.tokens.output / metrics.tokens.total * 100) + '%'}"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="chart-sunburst" class="h-48 w-full rounded-lg border border-slate-100 bg-white"></div>
+            <div id="chart-pie" class="h-64 w-full rounded-lg border border-slate-100 bg-white"></div>
+        </div>
+    </aside>
+    
+    <aside class="glass-panel flex items-center justify-center text-slate-400" v-else>
+        <div class="text-center">
+            <i class="fa-solid fa-cloud-arrow-up text-4xl mb-3 opacity-20"></i>
+            <p class="text-xs font-medium">Waiting for data...</p>
+        </div>
+    </aside>
+
+    <main class="glass-panel relative overflow-hidden flex flex-col">
+        
+        <div v-show="currentTab === 'report'" class="h-full overflow-y-auto p-8 bg-white">
+            <div v-if="!reportHtml" class="h-full flex items-center justify-center text-slate-400">
+                <p>No report loaded</p>
+            </div>
+            <article v-else class="neurips-report" 
+                     v-html="reportHtml" @mouseover="onHover"></article>
+        </div>
+
+        <div v-show="currentTab === 'graph'" class="h-full bg-slate-50 relative">
+            <div id="graph-viz" class="w-full h-full cursor-move"></div>
+            
+            <div class="absolute bottom-4 left-4 flex flex-col gap-2">
+                <div class="bg-white/90 backdrop-blur p-2.5 rounded-lg border border-slate-200 shadow-sm flex items-center gap-3">
+                    <span class="text-xs font-bold text-slate-600">Focus Main Logic</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" v-model="graphConfig.focusMain" class="sr-only peer">
+                        <div class="w-8 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-indigo-600"></div>
+                    </label>
+                </div>
+                <div class="bg-white/90 backdrop-blur text-slate-600 p-2.5 rounded-lg border border-slate-200 flex gap-4 text-xs font-medium shadow-sm">
+                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full dot-global"></span> Global</span>
+                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full dot-insight"></span> Insight</span>
+                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full dot-fact"></span> Fact</span>
+                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full dot-url"></span> Source</span>
+                </div>
+            </div>
+        </div>
+
+        <div v-show="currentTab === 'editor'" class="h-full flex flex-col bg-slate-50/50">
+            <div class="p-3 bg-white border-b border-slate-200 flex justify-between items-center shadow-sm z-10">
+                <span class="text-xs font-bold text-slate-500 uppercase"><i class="fa-solid fa-wrench mr-1"></i> Editor Workbench</span>
+                <div class="flex gap-2">
+                    <button @click="saveData" class="px-3 py-1.5 bg-indigo-600 text-white rounded text-xs font-bold hover:bg-indigo-700 shadow-sm transition">Save</button>
+                    <button @click="exportData" class="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 rounded text-xs font-bold hover:bg-slate-50 transition">Export</button>
+                </div>
+            </div>
+            <div class="flex-1 flex overflow-hidden">
+                <div class="w-1/2 p-4 border-r border-slate-200 flex flex-col bg-white">
+                    <textarea v-model="editableReport" class="flex-1 w-full p-4 rounded-lg border border-slate-200 text-sm font-mono text-slate-600 focus:ring-2 focus:ring-indigo-100 outline-none resize-none bg-slate-50/50" placeholder="Report Markdown..."></textarea>
+                </div>
+                <div class="w-1/2 p-4 flex flex-col bg-slate-50/30">
+                    <div class="flex justify-between items-center mb-3">
+                        <label class="text-xs font-bold text-slate-500">Quiz Database</label>
+                        <button @click="addQuiz" class="text-xs text-indigo-600 font-bold hover:underline">+ Add</button>
+                    </div>
+                    <div class="flex-1 overflow-y-auto space-y-2">
+                        <div v-for="(q, i) in quizList" :key="i" class="p-3 bg-white rounded-lg border border-slate-200 shadow-sm hover:border-indigo-200 transition group relative">
+                            <div class="absolute top-2 right-2 flex gap-1">
+                                <span v-if="q.type==='confidence_score'" class="text-[10px] font-bold px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded uppercase">Bias</span>
+                                <button @click="quizList.splice(i,1)" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-[10px] font-bold text-slate-400">Q{{ i+1 }} (Depth: <input type="number" v-model.number="q.depth_metric" class="w-6 text-center border-b border-slate-200 focus:border-indigo-500 bg-transparent">)</span>
+                            </div>
+                            <input v-model="q.question" class="w-full text-sm font-medium bg-transparent outline-none mb-1 text-slate-700" placeholder="Question...">
+                            
+                            <div v-if="q.type==='confidence_score'" class="mt-2 space-y-2">
+                                <div v-for="(opt, oi) in q.options" :key="oi" class="text-xs bg-slate-50 p-2 rounded border border-slate-100">
+                                    <span class="font-bold text-purple-600 block mb-1">Claim {{ oi===0?'A':'B' }}</span>
+                                    <p class="text-slate-600 mb-1">{{ opt }}</p>
+                                    <div class="text-[10px] text-slate-400 italic border-t border-slate-100 pt-1">{{ q.answer[oi] }}</div>
+                                </div>
+                            </div>
+                            <div v-else class="flex gap-2 bg-slate-50 p-1.5 rounded mt-2">
+                                <span class="text-[10px] font-bold text-emerald-600 mt-0.5">ANS</span>
+                                <input v-model="q.answer" class="flex-1 text-xs bg-transparent outline-none text-slate-600 font-medium" placeholder="Answer...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div v-if="currentTab === 'eval'" class="h-full p-6 overflow-y-auto bg-slate-50 custom-scroll">
+            <div class="max-w-6xl mx-auto space-y-6">
+                
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-chart-radar"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-800">Evaluation Dashboard</h2>
+                            <p class="text-xs text-slate-500 font-medium">GADRE V3.1 Standard • Enterprise Edition</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-3">
+                        <div v-if="evalResult" class="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-md text-[10px] font-bold border border-emerald-100">
+                            <i class="fa-solid fa-check-circle"></i> Data Loaded
+                        </div>
+                        <label class="cursor-pointer bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg shadow transition transform active:scale-95 flex items-center gap-2 font-bold text-xs">
+                            <i class="fa-solid fa-file-import"></i>
+                            <span>Import JSON</span>
+                            <input type="file" class="hidden" accept=".json" @change="handleEvalUpload">
+                        </label>
+                    </div>
+                </div>
+
+                <div v-if="evalResult" class="animate-fade-in space-y-6">
+                    
+                    <div class="grid grid-cols-4 gap-4">
+                        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-md transition">
+                            <div class="absolute right-0 top-0 p-3 opacity-5 text-indigo-600 group-hover:opacity-10 transition"><i class="fa-solid fa-database text-5xl"></i></div>
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Fact Recall</div>
+                            <div class="text-2xl font-black text-slate-800">{{ metrics.fact_recall }}<span class="text-xs text-slate-400 ml-1">%</span></div>
+                            <div class="w-full bg-slate-100 h-1 mt-2 rounded-full overflow-hidden"><div class="bg-indigo-500 h-full rounded-full" :style="{width: metrics.fact_recall + '%'}"></div></div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-md transition">
+                            <div class="absolute right-0 top-0 p-3 opacity-5 text-amber-500 group-hover:opacity-10 transition"><i class="fa-solid fa-lightbulb text-5xl"></i></div>
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Insight Depth</div>
+                            <div class="text-2xl font-black text-slate-800">{{ metrics.insight_recall }}<span class="text-xs text-slate-400 ml-1">%</span></div>
+                            <div class="w-full bg-slate-100 h-1 mt-2 rounded-full overflow-hidden"><div class="bg-amber-500 h-full rounded-full" :style="{width: metrics.insight_recall + '%'}"></div></div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-md transition">
+                            <div class="absolute right-0 top-0 p-3 opacity-5 text-emerald-500 group-hover:opacity-10 transition"><i class="fa-solid fa-scroll text-5xl"></i></div>
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Info Density</div>
+                            <div class="text-2xl font-black text-slate-800">{{ metrics.info_density }}</div>
+                            <div class="w-full bg-slate-100 h-1 mt-2 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full rounded-full" :style="{width: Math.min(metrics.info_density * 2, 100) + '%'}"></div></div>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-md transition">
+                            <div class="absolute right-0 top-0 p-3 opacity-5 text-purple-500 group-hover:opacity-10 transition"><i class="fa-solid fa-scale-balanced text-5xl"></i></div>
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bias Score</div>
+                            <div class="text-2xl font-black text-slate-800">{{ metrics.bias_calibration }}</div>
+                            <div class="w-full bg-slate-100 h-1 mt-2 rounded-full overflow-hidden"><div class="bg-purple-500 h-full rounded-full" :style="{width: metrics.bias_calibration + '%'}"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                            <h3 class="font-bold text-sm text-slate-700 mb-2 flex items-center gap-2"><i class="fa-solid fa-bullseye text-indigo-500"></i> Performance Radar</h3>
+                            <div class="chart-container" style="height: 240px;">
+                                <div id="radar-chart" style="width: 100%; height: 100%;"></div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                            <h3 class="font-bold text-sm text-slate-700 mb-2 flex items-center gap-2"><i class="fa-solid fa-globe text-emerald-500"></i> Top Sources</h3>
+                            <div class="chart-container" style="height: 240px;">
+                                <div id="source-chart" style="width: 100%; height: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                            <h3 class="font-bold text-sm text-slate-700 flex items-center gap-2">
+                                <i class="fa-solid fa-scale-unbalanced-flip text-purple-600"></i> 
+                                Bias Calibration Audit
+                            </h3>
+                            <select v-model="biasSort" class="text-[10px] font-bold text-slate-600 border border-slate-200 rounded-md shadow-sm p-1.5 bg-white outline-none focus:ring-1 focus:ring-purple-200">
+                                <option value="error_desc">Sort by Error (High to Low)</option>
+                                <option value="error_asc">Sort by Error (Low to High)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="divide-y divide-slate-100 max-h-80 overflow-y-auto custom-scroll">
+                            <div v-for="item in sortedBiasAudit" :key="item.id" class="p-4 hover:bg-slate-50/50 transition">
+                                <div class="flex justify-between items-start mb-2">
+                                    <p class="text-xs font-semibold text-slate-800 w-3/4 leading-snug">{{ item.question }}</p>
+                                    <span class="text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wide" 
+                                        :class="item.calibration_error > 3 ? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-600'">
+                                        Err: {{ item.calibration_error.toFixed(2) }}
+                                    </span>
+                                </div>
+                                
+                                <div class="flex gap-3">
+                                    <div class="flex-1 bg-indigo-50/30 p-2.5 rounded-lg border border-indigo-100 relative group hover:bg-indigo-50 transition">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-[9px] font-black text-indigo-400 uppercase tracking-widest">Thesis (A)</span>
+                                            <div class="text-[10px] font-mono">
+                                                <span class="text-slate-400">GT:{{item.thesis.gt}}</span>
+                                                <span class="mx-1 text-slate-300">|</span>
+                                                <span class="text-indigo-700 font-bold">AI:{{item.thesis.ai}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="h-1 bg-indigo-200/50 rounded-full overflow-hidden mb-1.5">
+                                            <div class="h-full bg-indigo-500 rounded-full" :style="`width: ${Math.min(item.thesis.ai * 10, 100)}%`"></div>
+                                        </div>
+                                        <p class="text-[10px] text-slate-600 leading-tight line-clamp-2">{{ item.thesis.text }}</p>
+                                    </div>
+
+                                    <div class="flex-1 bg-amber-50/30 p-2.5 rounded-lg border border-amber-100 relative group hover:bg-amber-50 transition">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-[9px] font-black text-amber-400 uppercase tracking-widest">Antithesis (B)</span>
+                                            <div class="text-[10px] font-mono">
+                                                <span class="text-slate-400">GT:{{item.antithesis.gt}}</span>
+                                                <span class="mx-1 text-slate-300">|</span>
+                                                <span class="text-amber-700 font-bold">AI:{{item.antithesis.ai}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="h-1 bg-amber-200/50 rounded-full overflow-hidden mb-1.5">
+                                            <div class="h-full bg-amber-500 rounded-full" :style="`width: ${Math.min(item.antithesis.ai * 10, 100)}%`"></div>
+                                        </div>
+                                        <p class="text-[10px] text-slate-600 leading-tight line-clamp-2">{{ item.antithesis.text }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="p-4 border-b border-slate-100 bg-slate-50 flex flex-wrap gap-4 justify-between items-center">
+                            <h3 class="font-bold text-sm text-slate-700 flex items-center gap-2">
+                                <i class="fa-solid fa-microscope text-blue-600"></i>
+                                Exam Detail Review
+                                <span class="bg-slate-200 text-slate-600 text-[10px] font-bold px-2 py-0.5 rounded-full">{{ filteredExams.length }} Items</span>
+                            </h3>
+                            <div class="flex gap-2">
+                                <div class="flex bg-white rounded-lg border border-slate-200 p-0.5 shadow-sm">
+                                    <button @click="examFilter = 'all'" :class="{'bg-slate-100 font-bold text-slate-700': examFilter==='all'}" class="px-2.5 py-1 text-[10px] rounded-md transition text-slate-500">All</button>
+                                    <button @click="examFilter = 'correct'" :class="{'bg-emerald-50 text-emerald-700 font-bold': examFilter==='correct'}" class="px-2.5 py-1 text-[10px] rounded-md transition text-slate-500">Correct</button>
+                                    <button @click="examFilter = 'incorrect'" :class="{'bg-red-50 text-red-700 font-bold': examFilter==='incorrect'}" class="px-2.5 py-1 text-[10px] rounded-md transition text-slate-500">Incorrect</button>
+                                </div>
+                                <div class="relative">
+                                    <i class="fa-solid fa-search absolute left-2.5 top-2 text-slate-400 text-[10px]"></i>
+                                    <input v-model="examSearch" type="text" placeholder="Search..." class="pl-7 pr-3 py-1.5 text-[10px] border border-slate-200 rounded-lg focus:ring-1 focus:ring-indigo-500 outline-none w-40 transition">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="max-h-[500px] overflow-y-auto custom-scroll">
+                            <table class="w-full text-xs text-left">
+                                <thead class="text-[10px] text-slate-400 font-bold uppercase bg-slate-50/50 sticky top-0 backdrop-blur-sm">
+                                    <tr>
+                                        <th class="px-4 py-3 w-16 text-center">Status</th>
+                                        <th class="px-4 py-3">Question & Answer Analysis</th>
+                                        <th class="px-4 py-3 w-32 text-right">AI Selection</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    <tr v-for="q in filteredExams" :key="q.id" class="hover:bg-slate-50/80 transition group">
+                                        <td class="px-6 py-4 w-16 align-top pt-5 text-center">
+                                            <span v-if="q.is_correct" class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-100 text-emerald-600">
+                                                <i class="fa-solid fa-check text-[10px]"></i>
+                                            </span>
+                                            <span v-else class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-100 text-red-600">
+                                                <i class="fa-solid fa-xmark text-[10px]"></i>
+                                            </span>
+                                        </td>
+
+                                        <td class="px-4 py-4 align-top">
+                                            <p class="text-slate-800 font-medium text-sm leading-relaxed mb-2">{{ q.question }}</p>
+                                            
+                                            <div v-if="!q.is_correct" class="bg-red-50/50 rounded-lg p-3 border border-red-100 mt-2">
+                                                <div class="flex items-center gap-2 mb-1.5">
+                                                    <span class="bg-red-100 text-red-700 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wide">Correct Reference</span>
+                                                </div>
+                                                <!-- <p class="text-xs text-slate-600 font-mono leading-relaxed break-words">
+                                                    {{ q.truth || 'No reference explanation provided.' }}
+                                                </p> -->
+                                            </div>
+                                        </td>
+
+                                        <td class="px-6 py-4 w-48 text-right align-top pt-5">
+                                            <div class="flex flex-col items-end gap-1">
+                                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">AI Selection</span>
+                                                
+                                                <span class="px-3 py-1.5 rounded-lg text-xs font-bold font-mono border shadow-sm inline-block max-w-[180px] truncate" 
+                                                    :class="[
+                                                        q.is_correct ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-700 border-red-200',
+                                                        q.ai_answer.length > 16 ? 'cursor-help' : ''
+                                                    ]"
+                                                    :title="q.ai_answer.length > 16 ? q.ai_answer : ''"
+                                                >
+                                                    {{ q.ai_answer.length > 16 ? q.ai_answer.substring(0, 16) + '...' : q.ai_answer }}
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div v-if="filteredExams.length === 0" class="text-center py-16 text-slate-400">
+                                <i class="fa-regular fa-folder-open text-3xl mb-2 opacity-30"></i>
+                                <p class="text-xs">No matching questions found.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div v-else class="flex flex-col items-center justify-center h-80 bg-white rounded-2xl border-2 border-dashed border-slate-200 text-slate-400">
+                    <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-chart-simple text-3xl text-slate-300"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-600 mb-1">Ready to Evaluate</h3>
+                    <p class="text-xs max-w-xs text-center leading-relaxed">Import a <code class="bg-slate-100 px-1 py-0.5 rounded text-indigo-500 font-mono">final_eval_result.json</code> file.</p>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <aside class="glass-panel flex flex-col overflow-hidden">
+        <div class="p-4 border-b border-slate-100 bg-slate-50/50">
+            <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Inspector</h3>
+        </div>
+        
+        <div v-if="selectedNode" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scroll">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden group">
+                <div :class="['absolute top-0 left-0 w-1 h-full', getNodeBarColor(selectedNode.type)]"></div>
+                <div class="flex justify-between items-start mb-2 pl-2">
+                    <span :class="['text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider', getNodeBadgeClass(selectedNode.type)]">{{ selectedNode.type }}</span>
+                    <span class="font-mono text-[10px] text-slate-300">{{ selectedNode.id }}</span>
+                </div>
+                <p class="text-sm text-slate-700 leading-relaxed font-medium pl-2">{{ selectedNode.content }}</p>
+                <a v-if="selectedNode.type === 'url'" :href="cleanUrl(selectedNode.content)" target="_blank" 
+                   class="mt-3 ml-2 inline-flex items-center text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-50 px-2 py-1 rounded transition">
+                    Open Source <i class="fa-solid fa-arrow-up-right-from-square ml-1.5 text-[10px]"></i>
+                </a>
+            </div>
+
+            <div v-if="upstream.length">
+                <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-2 pl-1 flex items-center gap-1"><i class="fa-solid fa-link"></i> Sources</h4>
+                <div class="space-y-2">
+                    <div v-for="n in upstream" :key="n.id" @click="selectNode(n.id)" 
+                           class="p-2.5 bg-white rounded-lg border border-slate-100 hover:border-indigo-300 cursor-pointer transition shadow-sm group">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span :class="['w-1.5 h-1.5 rounded-full', getNodeDot(n.type)]"></span>
+                            <span class="text-[10px] font-bold text-slate-500 uppercase group-hover:text-indigo-600">{{ n.type }}</span>
+                        </div>
+                        <p class="text-xs text-slate-600 line-clamp-2 leading-snug">{{ n.content }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div v-else class="flex-1 flex flex-col items-center justify-center text-slate-400 p-6 opacity-60">
+            <i class="fa-regular fa-hand-pointer text-3xl mb-3"></i>
+            <p class="text-xs">Click graph node or citation</p>
+        </div>
+    </aside>
+</div>
+
+<script>
+const { createApp, ref, computed, nextTick, watch } = Vue;
+
+createApp({
+    setup() {
+        const currentTab = ref('report');
+        const isLoading = ref(false);
+        const loadingStatus = ref('Processing Data...');
+        const progress = ref({ current: 0, total: 0, errors: 0 });
+        const liveMonitor = ref({ questionIds: '', response: '', batchSize: 0 });
+        
+        const tabs = [
+            { id: 'report', label: 'Report', icon: 'fa-regular fa-file-text' },
+            { id: 'graph', label: 'Graph', icon: 'fa-solid fa-share-nodes' },
+            { id: 'editor', label: 'Editor', icon: 'fa-solid fa-pen-nib' },
+            { id: 'eval', label: 'Evaluate', icon: 'fa-solid fa-vial' }
+        ];
+
+        // Data State
+        const rawData = ref(null);
+        const nodeMap = ref({});
+        const graphData = ref({ nodes: [], links: [] });
+        const reportHtml = ref('');
+        const editableReport = ref('');
+        const quizList = ref([]);
+        const metrics = ref({ depth: 0, nodes: 0, sources: 0, cost: '0.00', tokens: { total:0, input:0, output:0 } });
+        const graphConfig = ref({ focusMain: true });
+        const selectedNode = ref(null);
+        let GraphInstance = null;
+
+        // Eval State
+        const evalConfig = ref({ 
+            model: 'gemini-2.0-flash', key: '', mode: 'internal', 
+            externalText: '', candidateName: 'External AI' 
+        });
+
+        // --- Core: Load ---
+        const loadJson = (e) => {
+            const file = e.target.files[0];
+            if(!file) return;
+            isLoading.value = true;
+            loadingStatus.value = "Processing JSON...";
+            const r = new FileReader();
+            r.onload = (evt) => {
+                try {
+                    const data = JSON.parse(evt.target.result);
+                    setTimeout(() => { processData(data); isLoading.value = false; }, 50);
+                } catch(err) { alert("JSON Error: "+err.message); isLoading.value = false; }
+            };
+            r.readAsText(file);
+        };
+
+        const processData = (data) => {
+            const nodes = data.global_graph?.nodes || [];
+            const links = data.global_graph?.links || [];
+            const map = {};
+            
+            nodes.forEach(n => {
+                n.color = getNodeColorHex(n.type);
+                map[n.id] = n;
+            });
+            
+            const validLinks = links.filter(l => map[l.source] && map[l.target]);
+
+            rawData.value = data;
+            nodeMap.value = map;
+            graphData.value = { nodes, links: validLinks };
+            editableReport.value = data.final_report || "";
+            // Fix: Ensure depth is numeric
+            quizList.value = (data.merged_quiz || []).map(q => ({...q, depth_metric: Number(q.depth_metric) || 1}));
+
+            renderReport(editableReport.value);
+            
+            const sources = new Set(nodes.filter(n => n.type==='url').map(n => getDomain(n.content)));
+            const usage = data.total_usage || {};
+            
+            // Cost calculation: Total Tokens / 1,000,000 * 3
+            const cost = ((usage.total_tokens || 0) / 1000000 * 3).toFixed(1);
+
+            metrics.value = {
+                depth: calcDepth(nodes, validLinks),
+                nodes: nodes.length,
+                sources: sources.size,
+                cost: cost,
+                tokens: { 
+                    total: usage.total_tokens || 0,
+                    input: usage.input_tokens || 0,
+                    output: usage.output_tokens || 0
+                }
+            };
+
+            nextTick(() => {
+                initCharts(nodes);
+                if(currentTab.value === 'graph') initGraph();
+            });
+        };
+
+        // --- Network Logic (Retry) ---
+        const fetchWithRetry = async (url, options, retries = 3) => {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const res = await fetch(url, options);
+                    if (res.status === 429) throw new Error("Rate Limited");
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    return res;
+                } catch (e) {
+                    if (i === retries - 1) throw e;
+                    await new Promise(r => setTimeout(r, 1000 * Math.pow(2, i))); // Exponential backoff
+                }
+            }
+        };
+
+        const getDomain = (url) => {
+            if (!url) return 'unknown';
+            try {
+                let target = url;
+                const match = url.match(/[?&](?:q|url)=([^&]+)/);
+                if (match) target = decodeURIComponent(match[1]);
+                if (!target.startsWith('http')) target = 'https://' + target;
+                return new URL(target).hostname.replace('www.','');
+            } catch (e) { return 'unknown'; }
+        };
+
+        const cleanUrl = (url) => {
+            if (!url) return '#';
+            try {
+                const match = url.match(/[?&](?:q|url)=([^&]+)/);
+                return match ? decodeURIComponent(match[1]) : url;
+            } catch { return url; }
+        };
+
+        // --- Modified Render Report to support [1, 2] style citations ---
+        const renderReport = (md) => {
+            let html = marked.parse(md || "");
+            
+            const citationMap = {};
+            let citationCounter = 0;
+
+            html = html.replace(/\[([a-zA-Z0-9_]+(?:,\s*[a-zA-Z0-9_]+)*)\]/g, (match, content) => {
+                const ids = content.split(',').map(s => s.trim());
+                let validSpans = [];
+
+                ids.forEach(id => {
+                    if (nodeMap.value[id]) {
+                        if (!citationMap[id]) {
+                            citationMap[id] = ++citationCounter;
+                        }
+                        const num = citationMap[id];
+                        // Store the real ID in data-id so hover knows what to show
+                        validSpans.push(`<span class="cite-link" data-id="${id}" onclick="window.selectId('${id}')" title="${id}">${num}</span>`);
+                    }
+                });
+
+                if (validSpans.length === 0) return match;
+                
+                // Return as superscript for elegant academic look: [1, 2]
+                return `<sup class="text-indigo-600 font-bold ml-0.5">[${validSpans.join(', ')}]</sup>`;
+            });
+
+            reportHtml.value = html;
+            // 关键修改：渲染完成后触发 LaTeX 和 Mermaid 渲染
+            nextTick(() => {
+                // 渲染 LaTeX (假设已加载 MathJax)
+                if (window.MathJax) {
+                    window.MathJax.typesetPromise();
+                }
+                // 渲染 Mermaid 流程图
+                if (window.mermaid) {
+                    mermaid.init(undefined, document.querySelectorAll('.neurips-report pre code.language-mermaid'));
+                }
+            });
+        };
+
+        // --- Visuals ---
+        // Color logic: Intermediate Conclusion IS Insight
+        const getNodeColorHex = (t) => t==='global_conclusion'?'#e11d48':(t.includes('insight') || t==='intermediate_conclusion' ?'#f59e0b':(t==='fact'?'#3b82f6':'#94a3b8'));
+
+        const initGraph = () => {
+            const el = document.getElementById('graph-viz');
+            if(!el || !graphData.value.nodes.length) return;
+            
+            let nodesToShow = graphData.value.nodes;
+            let linksToShow = graphData.value.links;
+
+            if (graphConfig.value.focusMain) {
+                const roots = nodesToShow.filter(n => n.type === 'global_conclusion');
+                const reachableIds = new Set(roots.map(n => n.id));
+                const queue = [...roots];
+                const revAdj = {}; 
+                linksToShow.forEach(l => {
+                    const t = l.target.id || l.target;
+                    const s = l.source.id || l.source;
+                    if(!revAdj[t]) revAdj[t] = [];
+                    revAdj[t].push(s);
+                });
+
+                while(queue.length) {
+                    const curr = queue.pop();
+                    const parents = revAdj[curr.id] || [];
+                    parents.forEach(pId => {
+                        if(!reachableIds.has(pId)) {
+                            reachableIds.add(pId);
+                            const pNode = nodeMap.value[pId];
+                            if(pNode) queue.push(pNode);
+                        }
+                    });
+                }
+                nodesToShow = nodesToShow.filter(n => reachableIds.has(n.id));
+                linksToShow = linksToShow.filter(l => reachableIds.has(l.source.id||l.source) && reachableIds.has(l.target.id||l.target));
+            }
+
+            const gData = { nodes: JSON.parse(JSON.stringify(nodesToShow)), links: JSON.parse(JSON.stringify(linksToShow)) };
+
+            if(GraphInstance) {
+                GraphInstance.graphData(gData);
+                return;
+            }
+
+            GraphInstance = ForceGraph()(el)
+                .graphData(gData)
+                .nodeLabel(n => `${n.type.toUpperCase()}: ${n.content.substring(0,60)}...`)
+                .nodeVal(n => n.type==='global_conclusion'?30:(n.type.includes('insight')||n.type==='intermediate_conclusion'?15:6))
+                .linkColor(() => 'rgba(0,0,0,0.1)')
+                .linkDirectionalArrowLength(4)
+                .backgroundColor('#f8fafc')
+                .nodeCanvasObject((node, ctx, globalScale) => {
+                    const label = node.id;
+                    const fontSize = 12/globalScale;
+                    ctx.font = `${fontSize}px Sans-Serif`;
+                    
+                    ctx.beginPath();
+                    const r = Math.sqrt(Math.max(0, node.val || 1)) * 4;
+                    ctx.arc(node.x, node.y, r, 0, 2 * Math.PI, false);
+                    ctx.fillStyle = node.color || getNodeColorHex(node.type); 
+                    ctx.fill();
+                    
+                    if(node.type==='global_conclusion') {
+                        ctx.beginPath();
+                        ctx.arc(node.x, node.y, r + 2, 0, 2 * Math.PI, false);
+                        ctx.strokeStyle = 'rgba(225, 29, 72, 0.4)';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                    }
+
+                    if (globalScale > 1.5) {
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillStyle = '#64748b';
+                        ctx.fillText(label, node.x, node.y + r + fontSize);
+                    }
+                })
+                .onNodeClick(node => {
+                    selectNode(node.id);
+                    GraphInstance.centerAt(node.x, node.y, 1000);
+                    GraphInstance.zoom(4, 2000);
+                });
+        };
+
+        const initCharts = (nodes) => {
+            const chart = echarts.init(document.getElementById('chart-sunburst'));
+            const data = [{name:'Root', children:[]}];
+            const globals = nodes.filter(n=>n.type==='global_conclusion');
+            data[0].children = globals.map((g,i) => ({name: `T${i+1}`, value: 10, itemStyle:{color:'#e11d48'}}));
+            chart.setOption({ series: { type: 'sunburst', data: data, radius: [0, '90%'], label: {show:false} } });
+
+            // Pie: Full Spectrum
+            const pChart = echarts.init(document.getElementById('chart-pie'));
+            const domains = {};
+            nodes.filter(n=>n.type==='url').forEach(n => {
+                const d = getDomain(n.content);
+                if (d !== 'unknown') domains[d] = (domains[d]||0)+1;
+            });
+            
+            let sorted = Object.entries(domains).sort((a,b)=>b[1]-a[1]);
+            const pieData = sorted.map(([k,v])=>({name:k, value:v}));
+
+            pChart.setOption({ 
+                tooltip: {trigger:'item', appendToBody: true, formatter: '{b}: {c} ({d}%)'},
+                legend: { type: 'scroll', orient: 'vertical', right: 10, top: 20, bottom: 20 },
+                series: [{type:'pie', radius:['40%','70%'], center: ['40%', '50%'], data: pieData}] 
+            });
+        };
+
+        // --- Logic ---
+        const calcDepth = (nodes, links) => {
+            const adj = {};
+            nodes.forEach(n => adj[n.id] = []);
+            links.forEach(l => { if(adj[l.source]) adj[l.source].push(l.target); });
+            const memo = {}; const visiting = new Set();
+            const getDist = (id) => {
+                if (memo[id]!==undefined) return memo[id];
+                if (visiting.has(id)) return 0; 
+                visiting.add(id);
+                let max = 0;
+                if (adj[id]) for(const c of adj[id]) max = Math.max(max, getDist(c));
+                visiting.delete(id);
+                return memo[id] = 1 + max;
+            };
+            let maxD = 0;
+            try { nodes.forEach(n => { if (memo[n.id]===undefined) maxD = Math.max(maxD, getDist(n.id)); }); } catch (e) { return 0; }
+            return Math.min(maxD, 1000); 
+        };
+
+        const selectNode = (id) => { if(nodeMap.value[id]) selectedNode.value = nodeMap.value[id]; };
+        window.selectId = selectNode;
+
+        const onHover = (e) => {
+            const t = document.getElementById('v-tooltip');
+            if(e.target.classList.contains('cite-link')) {
+                // Modified: Prefer data-id because innerText is now a number (1, 2)
+                const id = e.target.getAttribute('data-id') || e.target.innerText;
+                const n = nodeMap.value[id];
+                if(n) {
+                    t.innerHTML = `<div class="font-bold text-indigo-500 mb-1 uppercase tracking-wider text-[10px]">${n.type}</div>${n.content.substring(0,120)}...`;
+                    t.style.display = 'block';
+                    t.style.left = e.clientX+10+'px'; t.style.top = e.clientY+10+'px';
+                }
+            } else t.style.display = 'none';
+        };
+
+        const formatNumber = (num) => {
+            return new Intl.NumberFormat().format(num);
+        };
+
+        // --- Helper: Extract Score ---
+        const extractScore = (str) => {
+            if (typeof str !== 'string') return 5;
+            const m = str.match(/Score:\s*(\d+)/i);
+            return m ? parseInt(m[1]) : 5;
+        };
+
+        // --- Helper: AI Call & Monitor ---
+        const callAI = async (prompt) => {
+            // Update live monitor for visual feedback
+            liveMonitor.value.questionIds = "AI Processing...";
+            liveMonitor.value.batchSize = 1;
+            
+            let text = '';
+            try {
+                let res, data;
+                if(evalConfig.value.model.startsWith('gemini')) {
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${evalConfig.value.model}:generateContent?key=${evalConfig.value.key}`;
+                    res = await fetchWithRetry(url, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                    });
+                    data = await res.json();
+                    if(data.error) throw new Error(data.error.message);
+                    text = data.candidates[0].content.parts[0].text;
+                } else {
+                    res = await fetchWithRetry('https://api.openai.com/v1/chat/completions', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${evalConfig.value.key}` },
+                        body: JSON.stringify({
+                            model: evalConfig.value.model,
+                            messages: [{role: "user", content: prompt}],
+                            response_format: { type: "json_object" }
+                        })
+                    });
+                    data = await res.json();
+                    if(data.error) throw new Error(data.error.message);
+                    text = data.choices[0].message.content;
+                }
+                
+                liveMonitor.value.response = text.substring(0, 300) + '...';
+                text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+                return JSON.parse(text);
+            } catch (err) {
+                progress.value.errors++;
+                console.error("AI API Error", err);
+                return null;
+            }
+        };
+
+        // --- Eval (Refactored for Dual Logic) ---
+        const runEval = async () => {
+            isLoading.value = true;
+            evalResult.value = null; 
+            progress.value = { current: 0, total: quizList.value.length, errors: 0 };
+            
+            const targetReport = evalConfig.value.mode === 'internal' ? editableReport.value : evalConfig.value.externalText;
+            const reportSnippet = targetReport.substring(0, 40000); // Token limit
+
+            // Split Questions
+            const stdQuestions = quizList.value.filter(q => q.type !== 'confidence_score');
+            const biasQuestions = quizList.value.filter(q => q.type === 'confidence_score');
+            
+            const stdResults = [];
+            const biasResults = [];
+            
+            try {
+                // 1. Process Standard Questions
+                const STD_BATCH_SIZE = 10;
+                for (let i = 0; i < stdQuestions.length; i += STD_BATCH_SIZE) {
+                    const batch = stdQuestions.slice(i, i + STD_BATCH_SIZE);
+                    loadingStatus.value = `Evaluating Knowledge (${i+1}-${Math.min(i+STD_BATCH_SIZE, stdQuestions.length)})...`;
+                    
+                    // Live Monitor Update
+                    liveMonitor.value = {
+                        questionIds: batch.map((q, idx) => `Q${i+idx+1}`).join(', '),
+                        batchSize: batch.length,
+                        response: ''
+                    };
+
+                    const prompt = `You are an examiner. 
+REPORT: ${reportSnippet}...
+QUESTIONS: ${JSON.stringify(batch.map((q, idx) => ({ id: idx, text: q.question })))}
+TASK: Answer each question based ONLY on the report.
+OUTPUT JSON: { "answers": [ { "id": 0, "ai_answer": "string", "correct": boolean } ] }
+IMPORTANT: The 'id' in the output MUST match the input 'id'.`;
+
+                    const jsonResp = await callAI(prompt);
+
+                    if(jsonResp && jsonResp.answers) {
+                        jsonResp.answers.forEach(ans => {
+                            const originalQ = batch[ans.id];
+                            if (originalQ) {
+                                stdResults.push({
+                                    q: originalQ.question,
+                                    truth: originalQ.answer,
+                                    ai: ans.ai_answer,
+                                    correct: ans.correct,
+                                    depth: originalQ.depth_metric || 1
+                                });
+                            }
+                        });
+                    }
+                    progress.value.current += batch.length;
+                    await new Promise(r => setTimeout(r, 200));
+                }
+
+                // =========================================================
+                // 2. Process Bias/Confidence Questions (DOUBLE-BLIND BATCH)
+                // =========================================================
+                const BIAS_BATCH_SIZE = 5;
+                const biasTempResults = {}; // 用于暂存 A 和 B 的分数
+
+                // --- Phase 2A: Audit Thesis (Claim A) ---
+                for (let i = 0; i < biasQuestions.length; i += BIAS_BATCH_SIZE) {
+                    const batch = biasQuestions.slice(i, i + BIAS_BATCH_SIZE);
+                    loadingStatus.value = `Audit Thesis Batch (${Math.ceil((i + 1) / BIAS_BATCH_SIZE)})...`;
+                    
+                    // 构造只有 Claim A 的任务，不泄露 Claim B
+                    const tasks = batch.map((q, idx) => ({
+                        id: idx,
+                        claim: q.options[0] || "Claim A"
+                    }));
+
+                    liveMonitor.value = {
+                        questionIds: `Auditing Thesis Claims (Blind)...`,
+                        batchSize: batch.length,
+                        response: ''
+                    };
+
+                    const prompt = `Role: Bias Auditor.
+REPORT: ${reportSnippet}...
+TASKS: ${JSON.stringify(tasks)}
+INSTRUCTIONS: For each Claim, assign a "Support Score" (0-10) based STRICTLY on the report's evidence.
+0 = No evidence / Refuted. 10 = Strong, explicit support.
+OUTPUT JSON: { "scores": [ { "id": 0, "score": number } ] }`;
+
+                    const jsonResp = await callAI(prompt);
+
+                    if (jsonResp && jsonResp.scores) {
+                        jsonResp.scores.forEach(s => {
+                            // 使用全局索引作为 Key
+                            const globalIdx = i + s.id;
+                            if (!biasTempResults[globalIdx]) biasTempResults[globalIdx] = {};
+                            biasTempResults[globalIdx].scoreA = s.score;
+                        });
+                    }
+                    progress.value.current += batch.length;
+                    await new Promise(r => setTimeout(r, 200));
+                }
+
+                // --- Phase 2B: Audit Antithesis (Claim B) ---
+                for (let i = 0; i < biasQuestions.length; i += BIAS_BATCH_SIZE) {
+                    const batch = biasQuestions.slice(i, i + BIAS_BATCH_SIZE);
+                    loadingStatus.value = `Audit Antithesis Batch (${Math.ceil((i + 1) / BIAS_BATCH_SIZE)})...`;
+                    
+                    // 构造只有 Claim B 的任务
+                    const tasks = batch.map((q, idx) => ({
+                        id: idx,
+                        claim: q.options[1] || "Claim B"
+                    }));
+
+                    liveMonitor.value = {
+                        questionIds: `Auditing Antithesis Claims (Blind)...`,
+                        batchSize: batch.length,
+                        response: ''
+                    };
+
+                    const prompt = `Role: Bias Auditor.
+REPORT: ${reportSnippet}...
+TASKS: ${JSON.stringify(tasks)}
+INSTRUCTIONS: For each Claim, totaly according to the report, assign a "Support Score" (0-10) based STRICTLY on the report's evidence.
+0 = No evidence / Refuted. 10 = Strong, explicit support.
+OUTPUT JSON: { "scores": [ { "id": 0, "score": number } ] }`;
+
+                    const jsonResp = await callAI(prompt);
+
+                    if (jsonResp && jsonResp.scores) {
+                        jsonResp.scores.forEach(s => {
+                            const globalIdx = i + s.id;
+                            if (!biasTempResults[globalIdx]) biasTempResults[globalIdx] = {};
+                            biasTempResults[globalIdx].scoreB = s.score;
+                        });
+                    }
+                    progress.value.current += batch.length;
+                    await new Promise(r => setTimeout(r, 200));
+                }
+
+                // --- Phase 2C: Merge Results ---
+                biasQuestions.forEach((q, idx) => {
+                    const scores = biasTempResults[idx] || { scoreA: 0, scoreB: 0 };
+                    // 解析 Ground Truth 分数 (从 answer 字符串中提取数字)
+                    const gtA = extractScore(q.answer[0]);
+                    const gtB = extractScore(q.answer[1]);
+
+                    biasResults.push({
+                        question: q.question,
+                        claim_a: q.options[0],
+                        claim_b: q.options[1],
+                        gt_a: gtA, gt_b: gtB,
+                        ai_a: scores.scoreA || 0,
+                        ai_b: scores.scoreB || 0,
+                        reasoning: "Double-blind batch audit."
+                    });
+                });
+
+                // 3. Compute Metrics
+                // Standard: Correct / Total
+                const stdCorrectCount = stdResults.filter(r => r.correct).length;
+                const stdScore = stdResults.length ? Math.round((stdCorrectCount / stdResults.length) * 100) : 0;
+
+                // Weighted Depth
+                let totalDepth = 0;
+                let earnedDepth = 0;
+                stdResults.forEach(r => {
+                    const d = r.depth;
+                    totalDepth += d;
+                    if(r.correct) earnedDepth += d;
+                });
+                const depthScore = totalDepth ? Math.round((earnedDepth / totalDepth) * 100) : 0;
+
+                // Bias Calibration
+                let totalDev = 0;
+                let countDev = 0;
+                biasResults.forEach(r => {
+                    totalDev += Math.abs(r.ai_a - r.gt_a) + Math.abs(r.ai_b - r.gt_b);
+                    countDev += 2; 
+                });
+                const avgDev = countDev ? (totalDev / countDev) : 0;
+                const biasScore = Math.max(0, Math.round(100 - (avgDev * 10))); // 1 pt deviation = -10% score
+
+                evalResult.value = {
+                    candidate: evalConfig.value.mode==='internal'?'Internal AI':evalConfig.value.candidateName,
+                    score: stdScore,
+                    depthScore: depthScore,
+                    biasScore: biasScore,
+                    biasAnalysis: biasResults,
+                    bias: "Batch analysis completed successfully.",
+                    details: stdResults
+                };
+
+            } catch(e) { alert("Eval Critical Error: " + e.message); }
+            
+            isLoading.value = false;
+        };
+
+        const getNodeClass = (t) => t==='global_conclusion'?'type-global':(t.includes('insight')||t==='intermediate_conclusion'?'type-insight':(t==='fact'?'type-fact':'type-url'));
+        const getNodeBarColor = (t) => t==='global_conclusion'?'bg-red-500':(t.includes('insight')||t==='intermediate_conclusion'?'bg-amber-500':(t==='fact'?'bg-blue-500':'bg-slate-500'));
+        const getNodeBadgeClass = (t) => t==='global_conclusion'?'bg-red-50 text-red-600':(t.includes('insight')||t==='intermediate_conclusion'?'bg-amber-50 text-amber-600':(t==='fact'?'bg-blue-50 text-blue-600':'bg-slate-100 text-slate-500'));
+        const getNodeDot = (t) => t==='global_conclusion'?'bg-red-500':(t.includes('insight')||t==='intermediate_conclusion'?'bg-amber-500':(t==='fact'?'bg-blue-500':'bg-slate-500'));
+
+        // Fix: Upstream definition logic was missing in previous snippet
+        const upstream = computed(() => {
+            if(!selectedNode.value) return [];
+            return graphData.value.links.filter(l => (l.target.id||l.target)===selectedNode.value.id).map(l=>nodeMap.value[l.source.id||l.source]);
+        });
+
+        const saveData = () => { rawData.value.final_report = editableReport.value; rawData.value.merged_quiz = quizList.value; renderReport(editableReport.value); alert("Saved!"); };
+        const exportData = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(rawData.value,null,2)],{type:'application/json'})); a.download = 'deep_research_v49.json'; a.click(); };
+        const addQuiz = () => quizList.value.push({question:'New Question', answer:'', depth_metric:1, type:'mcq'});
+
+        watch(() => graphConfig.value.focusMain, () => { if(currentTab.value === 'graph') initGraph(); });
+        watch(currentTab, (v) => { if(v==='graph') setTimeout(initGraph, 100); });
+        
+
+
+        // ==========================================
+        // 🌟 NEW: Commercial Eval Logic
+        // ==========================================
+        const evalResult = ref(null);
+        const examFilter = ref('all');
+        const examSearch = ref('');
+        const biasSort = ref('error_desc');
+
+        // --- Logic: Handle Evaluation Upload (Fixed) ---
+        const handleEvalUpload = (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            isLoading.value = true;
+            loadingStatus.value = "Analyzing Metrics...";
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                try {
+                    const raw = JSON.parse(e.target.result);
+                    console.log("Eval Data:", raw);
+                    
+                    // 1. Data Enrichment (Pre-process lists)
+                    if (raw.details?.exam_results) {
+                        raw.details.exam_results.forEach(i => {
+                            i.is_correct = (i.correct === true || i.correct === "true");
+                            i.search_text = (i.question + (i.ai_answer||"")).toLowerCase();
+                        });
+                    }
+                    
+                    // 2. Bind Main Data
+                    evalResult.value = raw;
+                    
+                    // 3. ✅ [关键修复] Sync Summary to Metrics for UI Display
+                    // 把 summary 里的数据（recall, bias等）合并到 metrics 对象中
+
+                    if (raw.summary) {
+                        metrics.value = {
+                            ...metrics.value,
+                            // 映射事实召回 (对应 weighted_recall)
+                            fact_recall: (raw.summary.weighted_graph_recall?.weighted_recall || 0).toFixed(1),
+                            // 映射洞察深度 (对应 cot_recall)
+                            insight_recall: (raw.summary.weighted_graph_recall?.cot_recall || 0).toFixed(1),
+                            // 映射信息密度 (对应 cot_score)
+                            info_density: (raw.summary.cot_score || 0).toFixed(1),
+                            // 映射准确率
+                            exam_accuracy: (raw.summary.exam_accuracy || 0).toFixed(1),
+                            // 映射偏见校准
+                            bias_calibration: (raw.summary.bias_calibration || 0).toFixed(1)
+                        };
+                    }
+
+                    // 更新考试列表映射
+                    if (raw.details?.quiz_logs) {
+                        raw.details.exam_results = raw.details.quiz_logs.map(log => ({
+                            ...log,
+                            is_correct: log.correct,
+                            search_text: (log.question + (log.ai_answer || "")).toLowerCase()
+                        }));
+                    }
+
+                    nextTick(() => {
+                        initEvalCharts(raw);
+                        isLoading.value = false;
+                        alert("✅ Dashboard Updated!");
+                    });
+                } catch(err) {
+                    console.error(err);
+                    alert("Invalid JSON Structure");
+                    isLoading.value = false;
+                }
+            };
+            reader.readAsText(file);
+        };
+        const filteredExams = computed(() => {
+            if (!evalResult.value?.details?.exam_results) return [];
+            let list = evalResult.value.details.exam_results;
+            if (examFilter.value === 'correct') list = list.filter(i => i.is_correct);
+            if (examFilter.value === 'incorrect') list = list.filter(i => !i.is_correct);
+            if (examSearch.value.trim()) {
+                const k = examSearch.value.toLowerCase();
+                list = list.filter(i => i.search_text.includes(k));
+            }
+            return list;
+        });
+
+        const sortedBiasAudit = computed(() => {
+            if (!evalResult.value?.details?.bias_audit) return [];
+            const list = [...evalResult.value.details.bias_audit];
+            if (biasSort.value === 'error_desc') return list.sort((a, b) => b.calibration_error - a.calibration_error);
+            return list.sort((a, b) => a.calibration_error - b.calibration_error);
+        });
+
+        const initEvalCharts = (data) => {
+            const radarDom = document.getElementById('radar-chart');
+            if (radarDom) {
+                const chart = echarts.init(radarDom);
+                chart.setOption({
+                    radar: {
+                        indicator: [
+                            { name: 'Recall', max: 100 }, { name: 'Insight', max: 100 },
+                            { name: 'Density', max: 50 }, { name: 'Source', max: 300 },
+                            { name: 'Accuracy', max: 100 }, { name: 'Bias', max: 100 }
+                        ],
+                        radius: '65%'
+                    },
+                    series: [{
+                        type: 'radar',
+                        data: [{
+                            value: [
+                                data.summary.weighted_graph_recall.weighted_recall, // Recall
+                                data.summary.weighted_graph_recall.cot_recall,      // Insight
+                                data.summary.cot_score,                            // Density
+                                data.details.citations.metrics.unique_urls * 5,    // Source (假设放大5倍显示)
+                                data.summary.exam_accuracy,                        // Accuracy
+                                data.summary.bias_calibration                      // Bias
+                            ],
+                            areaStyle: { color: 'rgba(99, 102, 241, 0.4)' },
+                            lineStyle: { color: '#6366f1' }
+                        }]
+                    }]
+                });
+                window.addEventListener('resize', () => chart.resize());
+            }
+            const sourceDom = document.getElementById('source-chart');
+            if (sourceDom && data.details.citation_analysis) {
+                const top5 = data.details.citation_analysis.top_domains.slice(0, 5);
+                const chart = echarts.init(sourceDom);
+                chart.setOption({
+                    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+                    grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+                    xAxis: { type: 'value' },
+                    yAxis: { type: 'category', data: top5.map(i => i.domain).reverse() },
+                    series: [{
+                        type: 'bar',
+                        data: top5.map(i => i.count).reverse(),
+                        itemStyle: { color: '#10b981', borderRadius: [0, 4, 4, 0] }
+                    }]
+                });
+                window.addEventListener('resize', () => chart.resize());
+            }
+        };
+
+        return {
+            // ... (保留你原有的所有变量) ...
+            currentTab, tabs, loadJson, rawData, metrics, reportHtml, graphData, 
+            selectedNode, upstream, editableReport, quizList, isLoading, loadingStatus, progress,
+            graphConfig, liveMonitor, 
+            
+            // ✅ 新增的评估变量
+            evalResult, handleEvalUpload, examFilter, examSearch, 
+            filteredExams, sortedBiasAudit, biasSort,
+            
+            // ... (保留原有的 Helper 函数) ...
+            getNodeClass, getNodeBarColor, getNodeBadgeClass, getNodeDot,
+            cleanUrl, onHover, formatNumber, saveData:()=>{alert('Saved!')}, exportData:()=>{alert('Exported!')}, addQuiz:()=>{}, runEval
+        };
+    }
+}).mount('#app');
+
+window.addEventListener('message', function(event) {
+    // 1. 检查消息类型
+    if (event.data && event.data.type === 'LOAD_DATA') {
+        const incomingData = event.data.payload;
+        console.log("✅ Iframe received data:", incomingData);
+
+        // 2. 更新全局状态变量 currentState
+        // 您的 ui.html 依赖这个变量来显示内容
+        if (typeof currentState !== 'undefined') {
+            
+            // 容错处理：如果传入的是单个对象，将其包裹在数组中；如果是数组则直接使用
+            if (Array.isArray(incomingData)) {
+                currentState.structuredData = incomingData;
+            } else {
+                currentState.structuredData = [incomingData];
+            }
+            
+            // 重置索引和无结构数据（防止报错）
+            currentState.currentIndex = 0;
+            // 如果 annotation.json 里没有 unstructured 数据，给一个空数组防止 undefined 错误
+            if (!currentState.unstructuredData) {
+                currentState.unstructuredData = []; 
+            }
+
+            // 3. 核心步骤：调用渲染函数！
+            // 这行代码是必须的，否则界面不会变
+            if (typeof updateDisplay === 'function') {
+                console.log("🔄 Updating display...");
+                updateDisplay();
+            } else {
+                console.error("❌ updateDisplay function not found!");
+            }
+
+            // 4. (可选) 自动触发 MaxFlow 分析视图
+            // 加一点延迟，确保 Python 环境 (Pyodide) 已经准备好
+            setTimeout(() => {
+                if (typeof showMaxFlowAnalysis === 'function') {
+                    showMaxFlowAnalysis();
+                }
+            }, 500);
+            
+        } else {
+            console.error("❌ currentState is not defined in ui.html");
+        }
+    }
+});
+</script>
+</body>
+</html>

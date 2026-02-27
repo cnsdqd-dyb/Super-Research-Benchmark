@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 引入 Tailwind CSS 进行极简排版 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入科研风格字体：标题用衬线体，数据用等宽字体，正文用无衬线体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,700;1,400&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* 科研风格配色字典 */
+            --bg-color: #ffffff;
+            --grid-color: #f1f3f5;
+            --text-main: #212529;
+            --text-muted: #6c757d;
+            --border-color: #dee2e6;
+            
+            /* 数据可视化颜色 */
+            --chart-blue: #3b82f6; /* 学术蓝：用于正向能力指标 */
+            
+            /* 排名奖牌颜色 (极简学术风) */
+            --gold: #d4af37;
+            --silver: #a8a9ad;
+            --bronze: #cd7f32;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            /* 强制 16:9 横屏比例基础，适合 1920x1080 录制 */
+            min-width: 1280px;
+            min-height: 720px;
+            overflow: hidden;
+        }
+
+        /* 细致的学术网格背景 */
+        .academic-grid {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+        }
+
+        /* 字体类 */
+        .font-serif-title { font-family: 'Lora', serif; }
+        .font-mono-data { font-family: 'Fira Code', monospace; }
+
+        /* 卡片/行样式 (高度压低，排版紧凑) */
+        .row-item {
+            position: absolute;
+            width: 100%;
+            height: 46px; /* 高度减小，更紧凑 */
+            left: 0;
+            background: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            transition: top 1.2s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                        background-color 0.4s ease;
+        }
+        
+        .row-item:hover {
+            background-color: #f8f9fa;
+            z-index: 50 !important;
+        }
+
+        /* 进度条动画 */
+        .bar-container {
+            width: 100%;
+            height: 10px; /* 进度条稍微调细配合紧凑行高 */
+            background-color: #e9ecef;
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            transition: width 1.2s cubic-bezier(0.25, 1, 0.5, 1),
+                        background-color 0.8s ease;
+            border-radius: 2px;
+        }
+
+        /* 排名数字徽章 */
+        .rank-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-radius: 4px;
+            background: #f8f9fa;
+            border: 1px solid var(--border-color);
+            transition: all 0.8s ease;
+        }
+
+        /* 前三名极简高亮 */
+        .rank-1 .rank-badge { background: #fffbeb; color: #b45309; border-color: var(--gold); }
+        .rank-2 .rank-badge { background: #f8fafc; color: #334155; border-color: var(--silver); }
+        .rank-3 .rank-badge { background: #fff7ed; color: #9a3412; border-color: var(--bronze); }
+
+        /* 柱状图颜色类 */
+        .bg-academic-blue { background-color: var(--chart-blue); }
+        .bg-academic-gray { background-color: var(--text-muted); }
+        
+        /* 风险值固定渐变色：短条显绿，长条显红 */
+        .bg-health-gradient {
+            background-image: linear-gradient(90deg, #10b981 0%, #facc15 40%, #e11d48 85%);
+            background-size: 700px 100%; /* 固定背景宽度，使得进度条生长时颜色逐渐揭示 */
+            background-repeat: no-repeat;
+            background-position: left center;
+        }
+
+        /* 场景标题文字切换动画 */
+        .scene-text {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .scene-text.fade {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+
+        /* 顶部录制进度指示器 */
+        #progress-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: var(--text-main);
+            width: 0%;
+            z-index: 100;
+        }
+        
+        /* 图表容器的外框 */
+        .chart-wrapper {
+            border: 1px solid var(--border-color);
+            background: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="p-6 md:p-8 flex flex-col items-center h-screen">
+
+    <!-- <div class="academic-grid"></div> -->
+    <div id="progress-line"></div>
+
+    <div class="w-full max-w-6xl flex-1 flex flex-col">
+        <!-- Header Section -->
+        <header class="mb-6 border-b-2 border-gray-800 pb-3 flex justify-between items-end relative z-10 bg-white/80 backdrop-blur-sm">
+            <div>
+                <div class="flex items-center gap-4">
+                    <h2 id="scene-title" class="scene-text text-xl font-semibold text-blue-700">Loading Data...</h2>
+                    <span class="text-gray-300">|</span>
+                    <p id="scene-desc" class="scene-text text-sm text-gray-500">Initializing analytical engine...</p>
+                </div>
+            </div>
+            <div class="text-right pb-1">
+                <p class="font-mono-data text-xs text-gray-400">Update Cycle: Dynamic (2s - 8s)</p>
+                <p class="font-mono-data text-xs text-gray-400">Data Source: Global Leaderboard Aggregation</p>
+            </div>
+        </header>
+
+        <!-- Main Chart Container -->
+        <div class="chart-wrapper relative z-10 overflow-hidden flex flex-col shrink-0" style="height: 610px;">
+            <!-- Table Headers -->
+            <div class="flex text-[11px] text-gray-500 uppercase tracking-widest font-semibold px-6 py-2 border-b border-gray-200 bg-gray-50">
+                <div class="w-12 text-center">Rank</div>
+                <div class="w-[440px] pl-4">Model & Architecture / Sub-Scores</div>
+                <div class="flex-1 pl-4">Performance Indicator (Relative Scaling)</div>
+                <div class="w-28 text-right pr-2">Metric & Meta</div>
+            </div>
+
+            <!-- List Area -->
+            <div id="chart-area" class="relative w-full flex-1 px-4 py-2">
+                <!-- Rows injected via JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Legend -->
+        <div class="mt-4 flex justify-center gap-8 text-xs text-gray-600 font-mono-data">
+            <div class="flex items-center gap-2">
+                <span class="w-4 h-4 rounded-sm bg-blue-500"></span> Positive Metric (Higher is Better)
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-16 h-4 rounded-sm bg-health-gradient"></div> Risk Metric (Gradient: Green to Red)
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="w-4 h-4 rounded-sm bg-gray-300"></span> Data Unavailable (N/A)
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 数据源 (补充了各个模型的 cov, con, uti, obj, nov 细分小分) ---
+        const models = [
+            { id: 'sonar', name: 'Sonar Deep Research', category: 'Deep Research System', overall: 29.83, cov: 41.52, con: 24.98, uti: 25.60, obj: 35.61, nov: 21.42, dom: 81.62, mon: 8.43, unc: 39.77, cost: 1.13, time: 136.87, arts: 27.8, comp: 32.4, cons: 24.5, env: 33.0, fin: 32.7, med: 30.1, sci: 29.5, soc: 29.4, tour: 29.5, trans: 30.0 , length: 42722.24, urls: 32.95 },
+            { id: 'gemini', name: 'Gemini Deep Research', category: 'Deep Research System', overall: 28.36, cov: 40.53, con: 24.24, uti: 23.11, obj: 35.16, nov: 18.76, dom: 68.99, mon: 5.44, unc: 13.28, cost: 1.68, time: 546.56, arts: 26.5, comp: 29.4, cons: 24.6, env: 31.3, fin: 31.2, med: 28.7, sci: 27.4, soc: 27.1, tour: 29.6, trans: 27.1 , length: 18715.33, urls: 35.84 },
+            { id: 'tongyi', name: 'Tongyi Deep Research', category: 'Deep Research System', overall: 24.29, cov: 35.52, con: 19.71, uti: 20.61, obj: 34.27, nov: 11.34, dom: null, mon: null, unc: null, cost: 0.00, time: 17.09, arts: 24.5, comp: 24.5, cons: 20.4, env: 27.2, fin: 27.8, med: 23.7, sci: 23.3, soc: 23.9, tour: 23.6, trans: 23.9 , length: 5544.88, urls: null },
+            { id: 'minimax', name: 'Minimax-m2.1', category: 'Search-Augmented Agent', overall: 24.22, cov: 33.52, con: 18.13, uti: 19.42, obj: 33.86, nov: 16.18, dom: 74.24, mon: 7.82, unc: 41.53, cost: 0.10, time: 285.55, arts: 22.3, comp: 27.1, cons: 20.9, env: 26.1, fin: 26.8, med: 24.7, sci: 24.3, soc: 22.9, tour: 24.3, trans: 21.9 , length: 34453.03, urls: 10.92 },
+            { id: 'kimi', name: 'Kimi-k2', category: 'Native Search-Integrated Agent', overall: 22.94, cov: 30.87, con: 16.64, uti: 19.47, obj: 33.55, nov: 14.18, dom: null, mon: null, unc: null, cost: 0.02, time: 18.46, arts: 26.3, comp: 21.4, cons: 18.2, env: 25.3, fin: 27.0, med: 21.7, sci: 22.2, soc: 23.4, tour: 23.1, trans: 20.3 , length: 3426.35, urls: null },
+            { id: 'deepseek', name: 'DeepSeek-r1', category: 'Search-Augmented Agent', overall: 21.16, cov: 28.75, con: 14.67, uti: 16.70, obj: 32.77, nov: 12.93, dom: 69.71, mon: 7.77, unc: 57.51, cost: 0.14, time: 151.82, arts: 20.7, comp: 22.3, cons: 17.8, env: 23.3, fin: 24.0, med: 21.6, sci: 20.7, soc: 19.4, tour: 21.1, trans: 20.0 , length: 6265.81, urls: 10.10 },
+            { id: 'grok', name: 'Grok-4-1-fast', category: 'Native Search-Integrated Agent', overall: 19.54, cov: 26.15, con: 13.14, uti: 16.59, obj: 31.25, nov: 10.56, dom: 65.94, mon: 11.81, unc: 84.69, cost: 0.01, time: 56.63, arts: 18.8, comp: 20.7, cons: 15.0, env: 21.0, fin: 22.0, med: 19.7, sci: 19.8, soc: 19.9, tour: 18.1, trans: 19.3 , length: 3945.17, urls: 7.18 },
+            { id: 'o3', name: 'o3 Deep Research', category: 'Deep Research System', overall: 18.71, cov: 25.62, con: 12.52, uti: 13.82, obj: 31.07, nov: 10.51, dom: 48.41, mon: 5.32, unc: 13.21, cost: 1.22, time: 277.45, arts: 17.4, comp: 20.1, cons: 15.1, env: 20.3, fin: 22.0, med: 18.7, sci: 18.0, soc: 17.8, tour: 19.2, trans: 18.0 , length: 10179.72, urls: 8.58 },
+            { id: 'qwen', name: 'Qwen-2.5-72B', category: 'Search-Augmented Agent', overall: 17.37, cov: 21.61, con: 9.84, uti: 14.83, obj: 30.97, nov: 9.62, dom: 41.34, mon: 17.03, unc: 67.58, cost: 0.07, time: 73.72, arts: 15.3, comp: 19.4, cons: 15.9, env: 17.6, fin: 20.5, med: 18.0, sci: 17.1, soc: 16.2, tour: 16.9, trans: 15.6 , length: 7117.44, urls: null },
+            { id: 'claude', name: 'Claude-3.5-Sonnet', category: 'Search-Augmented Agent', overall: 17.26, cov: 22.86, con: 10.68, uti: 14.12, obj: 30.19, nov: 8.44, dom: 37.97, mon: 12.45, unc: 91.95, cost: 0.23, time: 51.64, arts: 16.8, comp: 17.8, cons: 13.3, env: 17.8, fin: 20.0, med: 17.9, sci: 17.5, soc: 16.7, tour: 16.6, trans: 16.2 , length: 2677.46, urls: 2.17 },
+            { id: 'o4', name: 'o4-mini Deep Research', category: 'Deep Research System', overall: 17.12, cov: 21.87, con: 10.20, uti: 13.72, obj: 30.50, nov: 9.29, dom: 58.94, mon: 7.41, unc: 12.65, cost: 0.69, time: 233.12, arts: 16.7, comp: 17.3, cons: 12.7, env: 18.4, fin: 20.9, med: 18.0, sci: 17.2, soc: 15.1, tour: 16.4, trans: 16.3 , length: 6897.85, urls: 6.04 },
+            { id: 'llama', name: 'Llama-3.3-70B', category: 'Search-Augmented Agent', overall: 14.88, cov: 17.92, con: 7.60, uti: 11.78, obj: 29.80, nov: 7.31, dom: 34.10, mon: 22.66, unc: 69.90, cost: 0.09, time: 63.50, arts: 14.5, comp: 15.6, cons: 12.9, env: 14.7, fin: 18.2, med: 16.1, sci: 14.4, soc: 13.0, tour: 15.7, trans: 12.6 , length: 4473.71, urls: 6.38 }
+        ];
+
+        // --- 类别对应的学术标签配色样式 ---
+        function getCategoryStyle(category) {
+            if (category === 'Deep Research System') return 'text-blue-600 bg-blue-50 border-blue-200';
+            if (category === 'Native Search-Integrated Agent') return 'text-purple-600 bg-purple-50 border-purple-200';
+            if (category === 'Search-Augmented Agent') return 'text-teal-600 bg-teal-50 border-teal-200';
+            return 'text-gray-500 bg-gray-50 border-gray-200';
+        }
+
+        // --- 动态场景时间轴配置 (8秒慢速 vs 2秒快速) ---
+        const ROW_HEIGHT = 46; 
+        
+        const scenes = [
+            { id: 'overall', title: 'Global Overall Score', desc: 'Aggregated average of Coverage, Consistency, Utility, Objectivity, Novelty', type: 'normal', max: 32, duration: 8000 },
+            { id: 'health', title: 'Comprehensive Health Risk', desc: 'Average of Dominance, Monopolization, Uncited (Lower Risk is Better)', type: 'inverse', max: 60, duration: 8000 },
+            { id: 'arts', title: 'Domain: Arts & Creativity', desc: 'Specific domain evaluation metric', type: 'normal', max: 35, duration: 2000 },
+            { id: 'sci', title: 'Domain: Science & Engineering', desc: 'Specific domain evaluation metric', type: 'normal', max: 35, duration: 2000 },
+            { id: 'fin', title: 'Domain: Finance & Business', desc: 'Specific domain evaluation metric', type: 'normal', max: 35, duration: 2000 },
+            { id: 'med', title: 'Domain: Medical & Health', desc: 'Specific domain evaluation metric', type: 'normal', max: 35, duration: 2000 },
+            { id: 'env', title: 'Domain: Environment & Energy', desc: 'Specific domain evaluation metric', type: 'normal', max: 35, duration: 2000 },
+            { id: 'comp', title: 'Domain: Comprehensive & Others', desc: 'Specific domain evaluation metric', type: 'normal', max: 35, duration: 2000 },
+            { id: 'soc', title: 'Domain: Society & Humanities', desc: 'Specific domain evaluation metric', type: 'normal', max: 35, duration: 2000 },
+            { id: 'cons', title: 'Domain: Consumption & E-commerce', desc: 'Specific domain evaluation metric', type: 'normal', max: 35, duration: 2000 },
+            { id: 'tour', title: 'Domain: Tourism & Leisure', desc: 'Specific domain evaluation metric', type: 'normal', max: 35, duration: 2000 },
+            { id: 'trans', title: 'Domain: Transportation & Logistics', desc: 'Specific domain evaluation metric', type: 'normal', max: 35, duration: 2000 }
+        ];
+
+        let currentSceneIndex = 0;
+        let rowElements = {}; 
+
+        // --- 初始化 UI 结构 ---
+        function initChart() {
+            const container = document.getElementById('chart-area');
+            
+            models.forEach((model) => {
+                const row = document.createElement('div');
+                row.className = 'row-item flex items-center px-2';
+                row.id = `row-${model.id}`;
+                
+                row.innerHTML = `
+                    <div class="w-12 flex justify-center shrink-0">
+                        <div class="rank-badge" id="rank-${model.id}">-</div>
+                    </div>
+                    <!-- 拓宽了该列宽度，保证小分能够放下 -->
+                    <div class="w-[440px] pl-3 pr-4 flex flex-col justify-center shrink-0">
+                        <span class="font-bold text-gray-800 text-[13px] leading-tight truncate">${model.name}</span>
+                        <div class="mt-[2px] flex items-center gap-2">
+                            <span class="inline-block text-[9px] px-1.5 py-[1px] rounded border font-mono-data truncate ${getCategoryStyle(model.category)}">
+                                ${model.category}
+                            </span>
+                            <!-- 预留的小分展示容器 -->
+                            <span class="text-[9.5px] font-mono-data transition-opacity duration-300" id="sub-${model.id}"></span>
+                        </div>
+                    </div>
+                    <div class="flex-1 px-4 py-2 h-full flex items-center min-w-0">
+                        <div class="bar-container">
+                            <div class="bar-fill w-0" id="bar-${model.id}"></div>
+                        </div>
+                    </div>
+                    <div class="w-28 text-right pr-4 flex flex-col justify-center shrink-0">
+                        <span class="font-mono-data font-semibold text-gray-800 text-[14px] leading-tight" id="val-${model.id}">0.00</span>
+                        <span class="text-[9.5px] text-gray-400 font-mono-data mt-[2px]">$${model.cost.toFixed(2)} | ${model.time.toFixed(0)}s</span>
+                    </div>
+                `;
+                
+                container.appendChild(row);
+                
+                // 存储 DOM 引用
+                rowElements[model.id] = {
+                    el: row,
+                    valEl: document.getElementById(`val-${model.id}`),
+                    barEl: document.getElementById(`bar-${model.id}`),
+                    rankEl: document.getElementById(`rank-${model.id}`),
+                    subEl: document.getElementById(`sub-${model.id}`), // 小分 DOM
+                    currentVal: 0
+                };
+            });
+            
+            setTimeout(nextScene, 100);
+        }
+
+        // --- 核心算分逻辑 ---
+        function getScore(model, scene) {
+            if (scene.id === 'overall') return model.overall;
+            if (scene.id === 'health') {
+                if (model.dom === null) return null; // 缺失数据
+                return (model.dom + model.mon + model.unc) / 3; 
+            }
+            return model[scene.id];
+        }
+
+        // --- JS数字平滑滚动 ---
+        function animateValue(obj, start, end, duration) {
+            if (end === null || isNaN(end)) {
+                obj.valEl.innerText = "N/A";
+                obj.valEl.classList.add("text-gray-300");
+                return;
+            }
+            obj.valEl.classList.remove("text-gray-300");
+            
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const current = start + easeOut * (end - start);
+                
+                obj.valEl.innerText = current.toFixed(2);
+                
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    obj.currentVal = end;
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // --- 渲染场景动画 ---
+        function renderScene(scene) {
+            // 文字切换动画 
+            const titleEl = document.getElementById('scene-title');
+            const descEl = document.getElementById('scene-desc');
+            titleEl.classList.add('fade');
+            descEl.classList.add('fade');
+            
+            setTimeout(() => {
+                titleEl.innerText = scene.title;
+                descEl.innerText = scene.desc;
+                if (scene.type === 'inverse') {
+                    titleEl.className = 'scene-text text-xl font-semibold text-rose-700';
+                } else {
+                    titleEl.className = 'scene-text text-xl font-semibold text-blue-700';
+                }
+                titleEl.classList.remove('fade');
+                descEl.classList.remove('fade');
+            }, 400);
+
+            // 顶部录制进度条 (匹配不同场景时长)
+            const progressBar = document.getElementById('progress-line');
+            progressBar.style.transition = 'none';
+            progressBar.style.width = '0%';
+            setTimeout(() => {
+                progressBar.style.transition = `width ${scene.duration}ms linear`;
+                progressBar.style.width = '100%';
+            }, 50);
+
+            // 数据计算与排序
+            const scoredModels = models.map(m => ({
+                ...m, 
+                _score: getScore(m, scene)
+            }));
+
+            // 排序逻辑
+            scoredModels.sort((a, b) => {
+                if (a._score === null) return 1; 
+                if (b._score === null) return -1;
+                return scene.type === 'inverse' ? a._score - b._score : b._score - a._score;
+            });
+
+            // 执行 CSS FLIP、进度条及小分更新
+            scoredModels.forEach((model, newRankIndex) => {
+                const ui = rowElements[model.id];
+                const score = model._score;
+                const isNull = score === null;
+
+                // 位置移动
+                ui.el.style.top = `${newRankIndex * ROW_HEIGHT + 10}px`;
+
+                // 排名更新
+                const displayRank = newRankIndex + 1;
+                ui.rankEl.innerText = isNull ? '-' : displayRank;
+                
+                ui.el.className = 'row-item flex items-center px-2'; 
+                if (!isNull && displayRank <= 3) {
+                    ui.el.classList.add(`rank-${displayRank}`);
+                }
+
+                // 进度条颜色
+                let targetWidth = 0;
+                let colorClass = 'bg-academic-gray'; 
+
+                if (!isNull) {
+                    targetWidth = Math.min((score / scene.max) * 100, 100);
+                    if (scene.type === 'inverse') {
+                        colorClass = 'bg-health-gradient';
+                    } else {
+                        colorClass = 'bg-academic-blue';
+                    }
+                }
+
+                ui.barEl.className = `bar-fill ${colorClass}`;
+                ui.barEl.style.width = isNull ? '0%' : `${targetWidth}%`;
+
+                // 动态构建小分展示 (Sub-score rendering)
+                let subText = '';
+                if (scene.id === 'overall') {
+                    // Overall 小分展示
+                    subText = `
+                        <span class="text-blue-600">Cov:</span><span class="text-gray-600 pr-1">${model.cov.toFixed(1)}</span>
+                        <span class="text-blue-600">Con:</span><span class="text-gray-600 pr-1">${model.con.toFixed(1)}</span>
+                        <span class="text-blue-600">Uti:</span><span class="text-gray-600 pr-1">${model.uti.toFixed(1)}</span>
+                        <span class="text-blue-600">Obj:</span><span class="text-gray-600 pr-1">${model.obj.toFixed(1)}</span>
+                        <span class="text-blue-600">Nov:</span><span class="text-gray-600">${model.nov.toFixed(1)}</span>
+                    `;
+                } else if (scene.id === 'health') {
+                    // Health Risk 小分展示
+                    const dom = model.dom !== null ? model.dom.toFixed(1) : 'N/A';
+                    const mon = model.mon !== null ? model.mon.toFixed(1) : 'N/A';
+                    const unc = model.unc !== null ? model.unc.toFixed(1) : 'N/A';
+                    subText = `
+                        <span class="text-rose-600">Dom:</span><span class="text-gray-600 pr-2">${dom}</span>
+                        <span class="text-rose-600">Mon:</span><span class="text-gray-600 pr-2">${mon}</span>
+                        <span class="text-rose-600">Unc:</span><span class="text-gray-600">${unc}</span>
+                    `;
+                }
+                
+                // 为了避免突兀，简单地做渐变过渡
+                ui.subEl.style.opacity = '0';
+                setTimeout(() => {
+                    ui.subEl.innerHTML = subText;
+                    ui.subEl.style.opacity = subText ? '1' : '0';
+                }, 300);
+
+                // 数字滚动 (根据动画长短微调滚动时间)
+                const animDuration = scene.duration === 8000 ? 1500 : 800;
+                animateValue(ui, ui.currentVal, score, animDuration);
+            });
+        }
+
+        // --- 主循环控制器 ---
+        function nextScene() {
+            const scene = scenes[currentSceneIndex];
+            renderScene(scene);
+            
+            // 获取当前场景停留时间
+            const currentDuration = scene.duration;
+            
+            currentSceneIndex = (currentSceneIndex + 1) % scenes.length;
+            setTimeout(nextScene, currentDuration);
+        }
+
+        // 绑定启动事件
+        window.addEventListener('DOMContentLoaded', initChart);
+    </script>
+</body>
+</html>

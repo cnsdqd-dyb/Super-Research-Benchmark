@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']] 
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/vis-network.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-data/7.1.2/vis-data.min.js"></script>
+  <style>
+        /* --- Section Separation & Title Enhancements --- */
+        .section {
+          padding: 5rem 1.5rem !important; 
+          border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .section:last-of-type {
+          border-bottom: none;
+        }
+        .section h2.title.is-3 {
+          font-family: 'Castoro', serif; 
+          font-weight: 700;
+          color: #1a252f; 
+          position: relative;
+          padding-bottom: 20px; 
+          margin-bottom: 40px !important; 
+        }
+        .section h2.title.is-3::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 150px;  
+          height: 4px;  
+          background: linear-gradient(90deg, #30CFD0 0%, #330867 100%); 
+          border-radius: 2px;
+        }
+        /* 统一所有副标题文字的大小、颜色和间距 */
+        .section h2.title.is-3 + .content,
+        .section h2.title.is-3 + .subtitle {
+          margin-top: -10px;
+          margin-bottom: 3rem !important;
+          color: #555 !important;
+          font-size: 1.1rem;
+        }
+        
+        .progress-container { display: flex; align-items: center; gap: 10px; margin: 5px 0; }
+        .progress-value { min-width: 60px; }
+        #attention-graph { background-color: white; border-radius: 4px; margin-top: 1rem; height: 400px; border: 1px solid #ddd; }
+        .problem-info { margin-bottom: 1rem; }
+        .notification { padding: 1.25rem; border-radius: 4px; margin-bottom: 1rem; }
+        .notification.is-danger { background-color: #feecf0; color: #cc0f35; }
+        .notification.is-warning { background-color: #fffbeb; color: #947600; }
+        .notification.is-info { background-color: #ebf8ff; color: #2b6cb0; }
+        .box { margin-bottom: 1.5rem; }
+        .field-body { display: flex; gap: 1rem; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Google Sans', 'Noto Sans', sans-serif; background: #f8f9fa; color: #333; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .hero { background: white; border-bottom: 1px solid #e9ecef; margin-bottom: 2rem; }
+        .hero-body { padding: 2rem 0; text-align: center; }
+        h1 { font-family: 'Castoro', serif; font-size: 2.5rem; font-weight: 300; color: #2c3e50; margin-bottom: 1rem; }
+        h2, h3 { font-family: 'Castoro', serif; color: #2c3e50; margin-bottom: 1rem; }
+        h2 { font-size: 1.8rem; }
+        h3 { font-size: 1.4rem; }
+        .card { background: white; border: 1px solid #e9ecef; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .button { display: inline-block; padding: 0.75rem 1.5rem; background: white; border: 2px solid #2c3e50; color: #2c3e50; text-decoration: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease; margin: 0.25rem; }
+        .button:hover { background: #2c3e50; color: white; transform: translateY(-1px); }
+  </style>
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B9N9911MNC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-B9N9911MNC');
+  </script>
+  
+  <meta charset="utf-8">
+  <meta name="description" content="SUPER RESEARCH: Answering Highly Complex Questions with Large Language Models though Super Deep and Super Wide Research">
+  <meta name="keywords" content="LLM, Deep Research, Agent, Graph Reasoning, Benchmark">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SUPER RESEARCH: Answering Highly Complex Questions with Large Language Models though Super Deep and Super Wide Research</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+  <style>
+    .table-container { overflow-x: auto; }
+    .best-score { font-weight: bold; }
+    .second-best { text-decoration: underline; }
+    .row-deep-research { background-color: #eef6fc; } 
+    .row-native-search { background-color: #fff8e1; } 
+    .row-augmented { background-color: #e8f5e9; } 
+    .metric-header { font-size: 0.85em; color: #555; }
+    
+    .super-title {
+      font-weight: 900; 
+      background: linear-gradient(to right, #30CFD0 0%, #330867 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      -webkit-text-stroke: 1px rgba(0, 0, 0, 0.1);
+      filter: drop-shadow(0 0 10px rgba(48, 207, 208, 0.3));
+    }
+  </style>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          
+          <h1 class="title is-1 publication-title" style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 2rem;">
+            <div style="margin-bottom: 15px;">
+                <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style="stop-color:#2c3e50" />
+                      <stop offset="100%" style="stop-color:#3498db" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M40 10C23.4315 10 10 23.4315 10 40C10 56.5685 23.4315 70 40 70C46.6437 70 52.7937 67.8385 57.8438 64.2031L78.5859 84.9453C79.3669 85.7263 80.6331 85.7263 81.4141 84.9453L84.9453 81.4141C85.7263 80.6331 85.7263 79.3669 84.9453 78.5859L64.2031 57.8438C67.8385 52.7937 70 46.6437 70 40C70 23.4315 56.5685 10 40 10ZM40 16C53.2548 16 64 26.7452 64 40C64 53.2548 53.2548 64 40 64C26.7452 64 16 53.2548 16 40C16 26.7452 26.7452 16 40 16Z" fill="url(#logo-gradient)"/>
+                  <circle cx="40" cy="30" r="4" fill="url(#logo-gradient)"/>
+                  <circle cx="28" cy="50" r="4" fill="url(#logo-gradient)"/>
+                  <circle cx="52" cy="50" r="4" fill="url(#logo-gradient)"/>
+                  <path d="M40 30L28 50M40 30L52 50M28 50L52 50" stroke="url(#logo-gradient)" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <span class="super-title">SUPER RESEARCH</span>
+            <span class="is-size-3 subtitle-text">Answering Highly Complex Questions with Large Language Models through Super Deep and Super Wide Research</span>
+          </h1>
+          <div class="is-size-5 publication-authors-flex">
+            <span class="author-block"><a href="#">Yubo Dong</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="#">Nianhao You</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="#">Yuxuan Hou</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="#">Zixun Sun</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="#">Yue Zhang</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="#">Liang Zhang</a><sup>2</sup>,</span>
+            <span class="author-block"><a href="#">Siyuan Zhao</a><sup>2</sup>,</span>
+            <span class="author-block"><a href="#">Yi Lin</a><sup>2, ✉</sup>,</span>
+            <span class="author-block"><a href="#">Hehe Fan</a><sup>1, ✉</sup></span>
+          </div>
+          
+          <div class="is-size-5 publication-institutions">
+            <span class="author-block"><sup>1</sup>Zhejiang University,</span>
+            <span class="author-block"><sup>2</sup>Ant Group</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded is-dark paper-btn">
+                  <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded is-dark paper-btn">
+                  <span class="icon"><i class="fab fa-github"></i></span>
+                  <span>Code</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#leaderboard" class="external-link button is-normal is-rounded is-dark paper-btn">
+                  <span class="icon"><i class="fas fa-trophy"></i></span>
+                  <span>Leaderboard</span>
+                </a>
+              </span>
+            </div>
+            <!-- <div class="news-section" style="margin-top: 3rem; max-width: 700px; margin-left: auto; margin-right: auto; text-align: left; background-color: #f8f9fa; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #3498db;">
+              <h3 class="title is-5" style="margin-bottom: 0.5rem;"><i class="fas fa-bullhorn" style="color: #3498db; margin-right: 8px;"></i>News</h3>
+              <ul style="font-size: 0.95rem; color: #555;">
+                <li><strong>[2026.02]</strong> 📄 Our paper is now publicly available on <a href="#" style="color: #3273dc; font-weight: 500;">arXiv</a>.</li>
+              </ul>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container is-fullhd">
+      <div style="padding: 0; overflow: hidden; height: 800px; border-radius: 12px;">
+        <iframe src="leaderboard.html" style="width: 100%; height: 100%; border: none;"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<style>
+.subtitle-text { margin-top: 10px; line-height: 1.4; color: #363636; font-weight: 400; }
+.publication-authors-flex { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 16px; margin-top: 1.5rem; }
+.publication-authors-flex .author-block { white-space: nowrap; }
+.publication-authors-flex a { color: #2e86de; font-weight: 500; transition: color 0.2s ease; }
+.publication-authors-flex a:hover { color: #0abde3; text-decoration: underline; }
+.publication-institutions { margin-top: 1.2rem; color: #636e72; font-size: 1.1rem; display: flex; justify-content: center; gap: 20px; }
+.publication-links { margin-top: 2rem; }
+.paper-btn { transition: transform 0.2s ease, box-shadow 0.2s ease !important; }
+.paper-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+</style>
+
+
+
+<section class="section" id="leaderboard">
+  <div class="container is-fullhd">
+    <h2 class="title is-3 has-text-centered">
+      <span class="icon" style="color: #3498db; margin-right: 8px;"><i class="fas fa-trophy"></i></span>
+      Performance Landscape
+    </h2>
+    <div class="content has-text-centered">
+      <p>
+        Comprehensive evaluation of research systems. Use the controls below to filter by model type or methodology.
+      </p>
+    </div>
+
+    <div class="leaderboard-container">
+      <div class="leaderboard-controls box" style="margin-bottom: 1.5rem; padding: 1rem;">
+        <div class="columns is-multiline is-vcentered">
+          <div class="column is-narrow">
+            <div class="field">
+              <label class="label is-small">View Mode</label>
+              <div class="control">
+                <div class="select is-small is-fullwidth">
+                  <select id="filter-view" onchange="switchView()">
+                    <option value="main">Main Metrics</option>
+                    <option value="domains">Domain Breakdown</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="column is-narrow">
+            <div class="field">
+              <label class="label is-small">Filter by Base Model</label>
+              <div class="control">
+                <div class="select is-small is-fullwidth">
+                  <select id="filter-base-model" onchange="renderLeaderboard()">
+                    <option value="all">All model groups</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="column is-narrow">
+            <div class="field">
+              <label class="label is-small">Filter by Method</label>
+              <div class="control">
+                <div class="select is-small is-fullwidth">
+                  <select id="filter-method" onchange="renderLeaderboard()">
+                    <option value="all">All Methods</option>
+                    <option value="Deep Research System">Deep Research System</option>
+                    <option value="Native Search-Integrated Agent">Native Search Agent</option>
+                    <option value="Search-Augmented Agent">Search-Augmented Agent</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label is-small">Search</label>
+              <div class="control has-icons-left">
+                <input class="input is-small" type="text" id="search-input" placeholder="Search model name..." onkeyup="renderLeaderboard()">
+                <span class="icon is-small is-left">
+                  <i class="fas fa-search"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="column is-narrow" style="display: flex; align-items: flex-end;">
+             <button class="button is-small is-light" onclick="clearFilters()">
+               <span class="icon"><i class="fas fa-times"></i></span>
+               <span>Clear</span>
+             </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="table is-hoverable is-fullwidth is-striped" id="leaderboard-table">
+          <thead id="leaderboard-thead">
+            <!-- Headers injected via JavaScript -->
+          </thead>
+          <tbody id="leaderboard-body"></tbody>
+        </table>
+      </div>
+      
+      <div class="content is-small has-text-justified mt-4" style="line-height: 1.6; color: #555;">
+        <p>
+          Evaluation of representative research systems across three architectural paradigms: 
+          <span style="background-color: #eef6fc; padding: 2px 6px; border-radius: 4px; color: #0d47a1;">Deep Research System</span>, 
+          <span style="background-color: #fff8e1; padding: 2px 6px; border-radius: 4px; color: #ff6f00;">Native Search-Integrated Agent</span>, and 
+          <span style="background-color: #e8f5e9; padding: 2px 6px; border-radius: 4px; color: #1b5e20;">Search-Augmented Agent</span>. 
+          <strong>Bold</strong> and <u>underline</u> denote the best and second-best performance, respectively; $\uparrow$ ($\downarrow$) indicates that higher (lower) values are preferred.
+        </p>
+        <ul style="list-style-type: none; margin-left: 0; padding-left: 0; margin-top: 0.5rem;" id="legend-list">
+          <!-- Legend injected via JS -->
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  .leaderboard-container .table-container { overflow-x: auto !important; }
+  #leaderboard-table { width: 100%; }
+  #leaderboard-table th, #leaderboard-table td { vertical-align: middle; }
+  .model-col { white-space: nowrap !important; }
+  .leaderboard-controls .label { margin-bottom: 0.2rem; color: #666; }
+  .table th.sortable { cursor: pointer; user-select: none; transition: background-color 0.2s; white-space: nowrap; }
+  .table th.sortable:hover { background-color: #f0f0f0; color: #3273dc; }
+  .sort-icon { font-size: 0.7em; margin-left: 3px; opacity: 0.3; }
+  .table th.sorted-asc .sort-icon, .table th.sorted-desc .sort-icon { opacity: 1; color: #3273dc; }
+  .rank-first { font-weight: 800; color: #2c3e50; }
+  .rank-second { text-decoration: underline; text-decoration-color: #aaa; text-decoration-thickness: 2px; }
+  .tag-method { font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
+  .method-deep { background-color: #e3f2fd; color: #0d47a1; border: 1px solid #bbdefb; }
+  .method-native { background-color: #fff8e1; color: #ff6f00; border: 1px solid #ffecb3; }
+  .method-augmented { background-color: #e8f5e9; color: #1b5e20; border: 1px solid #c8e6c9; }
+</style>
+
+<script>
+  const leaderboardData = [
+      { model: "Sonar Deep Research", org: "Perplexity", base: "Sonar", method: "Deep Research System", overall: 29.83, coverage: 41.52, consistency: 24.98, utility: 25.60, objectivity: 35.61, novelty: 21.42, dominance: 81.62, monopoly: 8.43, uncited: 39.77, cost: 1.13, time: 136.87, length: 42722.24, urls: 32.95, arts: 27.8, comp: 32.4, cons: 24.5, env: 33.0, fin: 32.7, med: 30.1, sci: 29.5, soc: 29.4, tour: 29.5, trans: 30.0, link: "#" },
+      { model: "Gemini Deep Research", org: "Google", base: "Gemini", method: "Deep Research System", overall: 28.36, coverage: 40.53, consistency: 24.24, utility: 23.11, objectivity: 35.16, novelty: 18.76, dominance: 68.99, monopoly: 5.44, uncited: 13.28, cost: 1.68, time: 546.56, length: 18715.33, urls: 35.84, arts: 26.5, comp: 29.4, cons: 24.6, env: 31.3, fin: 31.2, med: 28.7, sci: 27.4, soc: 27.1, tour: 29.6, trans: 27.1, link: "#" },
+      { model: "Tongyi Deep Research", org: "Alibaba", base: "Tongyi", method: "Deep Research System", overall: 24.29, coverage: 35.52, consistency: 19.71, utility: 20.61, objectivity: 34.27, novelty: 11.34, dominance: null, monopoly: null, uncited: null, cost: 0.00, time: 17.09, length: 5544.88, urls: null, arts: 24.5, comp: 24.5, cons: 20.4, env: 27.2, fin: 27.8, med: 23.7, sci: 23.3, soc: 23.9, tour: 23.6, trans: 23.9, link: "#" },
+      { model: "Minimax-m2.1", org: "MiniMax", base: "MiniMax", method: "Search-Augmented Agent", overall: 24.22, coverage: 33.52, consistency: 18.13, utility: 19.42, objectivity: 33.86, novelty: 16.18, dominance: 74.24, monopoly: 7.82, uncited: 41.53, cost: 0.10, time: 285.55, length: 34453.03, urls: 10.92, arts: 22.3, comp: 27.1, cons: 20.9, env: 26.1, fin: 26.8, med: 24.7, sci: 24.3, soc: 22.9, tour: 24.3, trans: 21.9, link: "#" },
+      { model: "Kimi-k2", org: "Moonshot", base: "Kimi", method: "Native Search-Integrated Agent", overall: 22.94, coverage: 30.87, consistency: 16.64, utility: 19.47, objectivity: 33.55, novelty: 14.18, dominance: null, monopoly: null, uncited: null, cost: 0.02, time: 18.46, length: 3426.35, urls: null, arts: 26.3, comp: 21.4, cons: 18.2, env: 25.3, fin: 27.0, med: 21.7, sci: 22.2, soc: 23.4, tour: 23.1, trans: 20.3, link: "#" },
+      { model: "Deepseek-r1", org: "DeepSeek", base: "DeepSeek", method: "Search-Augmented Agent", overall: 21.16, coverage: 28.75, consistency: 14.67, utility: 16.70, objectivity: 32.77, novelty: 12.93, dominance: 69.71, monopoly: 7.77, uncited: 57.51, cost: 0.14, time: 151.82, length: 6265.81, urls: 10.10, arts: 20.7, comp: 22.3, cons: 17.8, env: 23.3, fin: 24.0, med: 21.6, sci: 20.7, soc: 19.4, tour: 21.1, trans: 20.0, link: "#" },
+      { model: "Grok-4-1-fast", org: "xAI", base: "Grok", method: "Native Search-Integrated Agent", overall: 19.54, coverage: 26.15, consistency: 13.14, utility: 16.59, objectivity: 31.25, novelty: 10.56, dominance: 65.94, monopoly: 11.81, uncited: 84.69, cost: 0.01, time: 56.63, length: 3945.17, urls: 7.18, arts: 18.8, comp: 20.7, cons: 15.0, env: 21.0, fin: 22.0, med: 19.7, sci: 19.8, soc: 19.9, tour: 18.1, trans: 19.3, link: "#" },
+      { model: "o3 Deep Research", org: "OpenAI", base: "o3", method: "Deep Research System", overall: 18.71, coverage: 25.62, consistency: 12.52, utility: 13.82, objectivity: 31.07, novelty: 10.51, dominance: 48.41, monopoly: 5.32, uncited: 13.21, cost: 1.22, time: 277.45, length: 10179.72, urls: 8.58, arts: 17.4, comp: 20.1, cons: 15.1, env: 20.3, fin: 22.0, med: 18.7, sci: 18.0, soc: 17.8, tour: 19.2, trans: 18.0, link: "#" },
+      { model: "Qwen-2.5-72B", org: "Alibaba", base: "Qwen", method: "Search-Augmented Agent", overall: 17.37, coverage: 21.61, consistency: 9.84, utility: 14.83, objectivity: 30.97, novelty: 9.62, dominance: 41.34, monopoly: 17.03, uncited: 67.58, cost: 0.07, time: 73.72, length: 7117.44, urls: null, arts: 15.3, comp: 19.4, cons: 15.9, env: 17.6, fin: 20.5, med: 18.0, sci: 17.1, soc: 16.2, tour: 16.9, trans: 15.6, link: "#" },
+      { model: "Claude-3.5-sonnet", org: "Anthropic", base: "Claude", method: "Search-Augmented Agent", overall: 17.26, coverage: 22.86, consistency: 10.68, utility: 14.12, objectivity: 30.19, novelty: 8.44, dominance: 37.97, monopoly: 12.45, uncited: 91.95, cost: 0.23, time: 51.64, length: 2677.46, urls: 2.17, arts: 16.8, comp: 17.8, cons: 13.3, env: 17.8, fin: 20.0, med: 17.9, sci: 17.5, soc: 16.7, tour: 16.6, trans: 16.2, link: "#" },
+      { model: "o4-mini Deep Research", org: "OpenAI", base: "o4", method: "Deep Research System", overall: 17.12, coverage: 21.87, consistency: 10.20, utility: 13.72, objectivity: 30.50, novelty: 9.29, dominance: 58.94, monopoly: 7.41, uncited: 12.65, cost: 0.69, time: 233.12, length: 6897.85, urls: 6.04, arts: 16.7, comp: 17.3, cons: 12.7, env: 18.4, fin: 20.9, med: 18.0, sci: 17.2, soc: 15.1, tour: 16.4, trans: 16.3, link: "#" },
+      { model: "Llama-3.3-70B", org: "Meta", base: "Llama", method: "Search-Augmented Agent", overall: 14.88, coverage: 17.92, consistency: 7.60, utility: 11.78, objectivity: 29.80, novelty: 7.31, dominance: 34.10, monopoly: 22.66, uncited: 69.90, cost: 0.09, time: 63.50, length: 4473.71, urls: 6.38, arts: 14.5, comp: 15.6, cons: 12.9, env: 14.7, fin: 18.2, med: 16.1, sci: 14.4, soc: 13.0, tour: 15.7, trans: 12.6, link: "#" }
+  ];
+
+  const lowerIsBetter = ['dominance', 'monopoly', 'uncited', 'cost', 'time'];
+  const mainMetrics = ['overall', 'coverage', 'consistency', 'utility', 'objectivity', 'novelty', 'dominance', 'monopoly', 'uncited', 'cost', 'time', 'length', 'urls'];
+  const domainMetrics = ['arts', 'comp', 'cons', 'env', 'fin', 'med', 'sci', 'soc', 'tour', 'trans'];
+  
+  const metricLabels = {
+    overall: "Overall", coverage: "Cov", consistency: "Cons", utility: "Util", objectivity: "Obj", novelty: "Nov", 
+    dominance: "Dom", monopoly: "Mono", uncited: "Unc", cost: "Cost", time: "Time(s)", length: "Length", urls: "URLs",
+    arts: "Arts & Crea.", comp: "Comp. & Oth.", cons: "Cons. & E-com.", env: "Env. & Ene.", fin: "Fin. & Bus.", 
+    med: "Med. & Health", sci: "Sci. & Eng.", soc: "Soc. & Hum.", tour: "Tour. & Lei.", trans: "Trans. & Log."
+  };
+
+  let currentSort = { key: 'overall', dir: 'desc' }; 
+  let currentView = 'main';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    populateBaseModelFilter();
+    switchView(); // Initialize view
+  });
+
+  function populateBaseModelFilter() {
+    const bases = [...new Set(leaderboardData.map(d => d.base))].sort();
+    const select = document.getElementById('filter-base-model');
+    bases.forEach(base => {
+      const option = document.createElement('option');
+      option.value = base;
+      option.textContent = base;
+      select.appendChild(option);
+    });
+  }
+
+  function switchView() {
+    currentView = document.getElementById('filter-view').value;
+    currentSort = { key: currentView === 'main' ? 'overall' : 'arts', dir: 'desc' };
+    
+    // Update headers
+    const thead = document.getElementById('leaderboard-thead');
+    let headersHTML = `<tr>
+      <th class="sortable model-col" onclick="sortTable('model')" style="white-space: nowrap;">Model <span class="icon sort-icon"><i class="fas fa-sort"></i></span></th>
+      <th class="sortable is-hidden-mobile" onclick="sortTable('org')" style="white-space: nowrap;">Org <span class="icon sort-icon"><i class="fas fa-sort"></i></span></th>
+      <th class="sortable is-hidden-touch" onclick="sortTable('method')" style="white-space: nowrap;">Method <span class="icon sort-icon"><i class="fas fa-sort"></i></span></th>
+    `;
+    
+    const activeMetrics = currentView === 'main' ? mainMetrics : domainMetrics;
+    
+    activeMetrics.forEach(metric => {
+      const isLowerBetter = lowerIsBetter.includes(metric);
+      const arrow = isLowerBetter ? '$\\downarrow$' : '$\\uparrow$';
+      const isOverall = metric === 'overall';
+      const style = isOverall ? 'background-color: #f5f5f5; white-space: nowrap;' : 'white-space: nowrap;';
+      const label = isOverall ? `<strong>Overall</strong>` : metricLabels[metric];
+      
+      headersHTML += `<th class="sortable has-text-right" onclick="sortTable('${metric}')" style="${style}">${label} (${arrow}) <span class="icon sort-icon"><i class="fas fa-sort"></i></span></th>`;
+    });
+    
+    headersHTML += `</tr>`;
+    thead.innerHTML = headersHTML;
+    
+    // Update Legend
+    const legendList = document.getElementById('legend-list');
+    if (currentView === 'main') {
+        legendList.innerHTML = `
+          <li><strong>Overall:</strong> Aggregate score synthesized from the core metrics.</li>
+          <li><strong>Quality:</strong> Coverage ($\mathcal{R}_{weighted}$), Consistency ($\mathcal{C}_{logic}$), Utility ($\mathcal{U}_{qa}$), Objectivity ($\mathcal{O}_{bias}$), Novelty ($\mathcal{N}$).</li>
+          <li><strong>Citation Health:</strong> Dominance ($\mathcal{D}_{src}$), Monopolization ($\mathcal{M}_{mono}$), Uncited Rate ($\mathcal{U}_{uncited}$).</li>
+        `;
+    } else {
+        legendList.innerHTML = `
+          <li><strong>Domain Breakdown:</strong> Performance decomposed into 10 specialized domains representing real-world analytic challenges. Higher scores indicate better domain-specific synthesis and reasoning depth.</li>
+        `;
+    }
+
+    if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise();
+    }
+
+    renderLeaderboard();
+  }
+
+  function renderLeaderboard() {
+    const tableBody = document.getElementById('leaderboard-body');
+    tableBody.innerHTML = '';
+
+    const baseFilter = document.getElementById('filter-base-model').value;
+    const methodFilter = document.getElementById('filter-method').value;
+    const searchText = document.getElementById('search-input').value.toLowerCase();
+
+    let filteredData = leaderboardData.filter(item => {
+      const matchBase = baseFilter === 'all' || item.base === baseFilter;
+      const matchMethod = methodFilter === 'all' || item.method === methodFilter;
+      const matchSearch = item.model.toLowerCase().includes(searchText) || 
+                          item.org.toLowerCase().includes(searchText);
+      return matchBase && matchMethod && matchSearch;
+    });
+
+    const activeMetrics = currentView === 'main' ? mainMetrics : domainMetrics;
+    const stats = calculateStats(leaderboardData, activeMetrics); 
+
+    filteredData.sort((a, b) => {
+      let valA = a[currentSort.key];
+      let valB = b[currentSort.key];
+      // handle string sorting for model/org/method
+      if (typeof valA === 'string' && typeof valB === 'string') {
+          return currentSort.dir === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      }
+      if (valA === null || valA === undefined) return 1;
+      if (valB === null || valB === undefined) return -1;
+      if (valA < valB) return currentSort.dir === 'asc' ? -1 : 1;
+      if (valA > valB) return currentSort.dir === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    filteredData.forEach(row => {
+      const tr = document.createElement('tr');
+      let badgeClass = "method-augmented";
+      if (row.method.includes("Deep Research")) badgeClass = "method-deep";
+      if (row.method.includes("Native")) badgeClass = "method-native";
+
+      let cellsHTML = `
+        <td class="model-col" style="vertical-align: middle; white-space: nowrap;">
+            <a href="${row.link}" style="font-weight: 600; text-decoration: none; color: #3273dc;">${row.model}</a>
+        </td>
+        <td class="is-hidden-mobile" style="vertical-align: middle; white-space: nowrap;">${row.org}</td>
+        <td class="is-hidden-touch" style="vertical-align: middle; white-space: nowrap;">
+           <span class="tag-method ${badgeClass}">${row.method}</span>
+        </td>
+      `;
+
+      activeMetrics.forEach(metric => {
+          const isOverall = metric === 'overall';
+          const style = isOverall ? 'background-color: #fafafa; font-weight: bold;' : '';
+          cellsHTML += renderMetricCell(row[metric], stats[metric], metric, style);
+      });
+
+      tr.innerHTML = cellsHTML;
+      tableBody.appendChild(tr);
+    });
+
+    updateSortIcons();
+  }
+
+  function renderMetricCell(value, colStats, key, extraStyle = "") {
+    if (value === null || value === undefined) return `<td class="has-text-right has-text-grey-light" style="vertical-align: middle; ${extraStyle}">-</td>`;
+    let styleClass = "";
+    if (lowerIsBetter.includes(key)) {
+        if (value <= colStats.best + 0.001) styleClass = "rank-first";
+        else if (value <= colStats.second + 0.001) styleClass = "rank-second";
+    } else {
+        if (value >= colStats.best - 0.001) styleClass = "rank-first";
+        else if (value >= colStats.second - 0.001) styleClass = "rank-second";
+    }
+    // format numbers
+    let displayValue = (typeof value === 'number' && value % 1 !== 0) ? value.toFixed(2) : value;
+    return `<td class="has-text-right ${styleClass}" style="vertical-align: middle; ${extraStyle}">${displayValue}</td>`;
+  }
+  
+  function calculateStats(data, metrics) {
+    const stats = {};
+    metrics.forEach(key => {
+        const values = data.map(d => d[key]).filter(v => v !== null && v !== undefined);
+        if (lowerIsBetter.includes(key)) values.sort((a, b) => a - b);
+        else values.sort((a, b) => b - a);
+        stats[key] = { best: values[0] || null, second: values[1] || null };
+    });
+    return stats;
+  }
+
+  function sortTable(key) {
+    if (currentSort.key === key) {
+      currentSort.dir = currentSort.dir === 'asc' ? 'desc' : 'asc';
+    } else {
+      currentSort.key = key;
+      if (['model', 'org', 'method'].includes(key)) currentSort.dir = 'asc';
+      else if (lowerIsBetter.includes(key)) currentSort.dir = 'asc';
+      else currentSort.dir = 'desc';
+    }
+    renderLeaderboard();
+  }
+
+  function updateSortIcons() {
+    document.querySelectorAll('#leaderboard-thead .sortable').forEach(th => {
+      th.classList.remove('sorted-asc', 'sorted-desc');
+      const icon = th.querySelector('.icon i');
+      if(icon) icon.className = 'fas fa-sort'; 
+      if (th.getAttribute('onclick') && th.getAttribute('onclick').includes(`'${currentSort.key}'`)) {
+        th.classList.add(currentSort.dir === 'asc' ? 'sorted-asc' : 'sorted-desc');
+        if(icon) icon.className = currentSort.dir === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
+      }
+    });
+  }
+
+  function clearFilters() {
+    document.getElementById('filter-base-model').value = 'all';
+    document.getElementById('filter-method').value = 'all';
+    document.getElementById('search-input').value = '';
+    document.getElementById('filter-view').value = 'main';
+    switchView();
+  }
+</script>
+
+<section class="section" id="grid-gallery-container">
+  <div class="container is-widescreen">
+    <h2 class="title is-3 has-text-centered">
+      <span class="icon" style="color: #e74c3c; margin-right: 8px;"><i class="fas fa-images"></i></span>
+      Research Case Gallery
+    </h2>
+    <div class="content has-text-centered">
+      <p>Explore <strong>12 Key Research Questions</strong> through our auto-scrolling gallery of detailed case studies.</p>
+    </div>
+
+    <div class="swiper gallerySwiper mt-5">
+      <div class="swiper-wrapper" id="gallery-wrapper">
+        </div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </div>
+</section>
+
+<div id="lightbox-modal" class="custom-modal">
+  <div class="modal-backdrop" onclick="closeModal()"></div>
+  <div class="modal-container">
+    <div class="modal-header">
+      <span id="modal-title-text">Case Analysis</span>
+      <button class="modal-close-btn" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <img id="modal-img" src="" alt="Full Report">
+      <div class="modal-placeholder"><p>--- End of Report ---</p></div>
+    </div>
+  </div>
+</div>
+
+<style>
+#grid-gallery-container .gallerySwiper { width: 100%; height: 600px; padding: 40px !important; }
+#grid-gallery-container .swiper-slide { height: calc((100% - 40px) / 3) !important; display: flex; justify-content: center; align-items: center; transform: scale(1) !important; opacity: 1 !important; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+#grid-gallery-container .swiper-slide-active { transform: scale(1) !important; }
+.question-card { width: 100%; height: 100%; border-radius: 12px; position: relative; cursor: pointer; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transform: scale(0.7); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); border: 2px solid transparent; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 15px; }
+.question-card:hover { transform: scale(1.15); z-index: 999; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border-color: rgba(255, 255, 255, 1); }
+.question-id { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.8); margin-bottom: 8px; width: 100%; }
+.question-text { color: white; font-weight: 700; font-size: 1.1rem; line-height: 1.3; text-shadow: 0 2px 5px rgba(0,0,0,0.2); width: 100%; max-width: 90%; }
+.custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999999; justify-content: center; align-items: center; }
+.custom-modal.is-visible { display: flex; }
+.modal-backdrop { position: absolute; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
+.modal-container { position: relative; width: 90%; max-width: 900px; height: 85vh; background: white; border-radius: 8px; display: flex; flex-direction: column; z-index: 1000; animation: zoomIn 0.2s ease; }
+@keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.modal-header { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; background: #f9f9f9; }
+.modal-body { flex: 1; overflow-y: auto; background: #fff; }
+#modal-img { width: 100%; display: block; }
+.modal-close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const items = [
+    { id: '01', q: "How does 6G mitigate latency in URLLC?", color: "135deg, #FF9A9E, #FECFEF" },
+    { id: '02', q: "Impact of pilot contamination?", color: "135deg, #a18cd1, #fbc2eb" },
+    { id: '03', q: "Energy efficiency optimization?", color: "135deg, #84fab0, #8fd3f4" },
+    { id: '04', q: "HWI bottlenecks identification?", color: "120deg, #f6d365, #fda085" },
+    { id: '05', q: "Deep Unfolding vs Traditional?", color: "135deg, #667eea, #764ba2" },
+    { id: '06', q: "Robustness in MIMO systems?", color: "135deg, #43e97b, #38f9d7" },
+    { id: '07', q: "Graph Neural Networks utility?", color: "135deg, #fa709a, #fee140" },
+    { id: '08', q: "Non-stationary channels?", color: "135deg, #30cfd0, #330867" },
+    { id: '09', q: "Scalability of Cell-Free?", color: "135deg, #c471f5, #fa71cd" },
+    { id: '10', q: "Zero-touch management?", color: "135deg, #4facfe, #00f2fe" },
+    { id: '11', q: "Security constraints?", color: "135deg, #f093fb, #f5576c" },
+    { id: '12', q: "Spectral efficiency future?", color: "135deg, #89f7fe, #66a6ff" },
+    { id: '13', q: "AI-native air interface?", color: "135deg, #FF9A9E, #FECFEF" },
+    { id: '14', q: "Semantic communication?", color: "135deg, #a18cd1, #fbc2eb" },
+    { id: '15', q: "THz band propagation?", color: "135deg, #84fab0, #8fd3f4" },
+    { id: '16', q: "Digital Twin networks?", color: "120deg, #f6d365, #fda085" },
+  ];
+
+  const wrapper = document.getElementById('gallery-wrapper');
+  let html = '';
+
+  items.forEach(item => {
+    const reportImg = item.id % 2 === 0 ? 'figures/web_report.png' : 'figures/web_question.png';
+    html += `
+      <div class="swiper-slide">
+        <div class="question-card" 
+             style="background: linear-gradient(${item.color});"
+             onclick="openModal('${reportImg}', 'Case #${item.id}')">
+          <div class="question-id">Case #${item.id}</div>
+          <div class="question-text">${item.q}</div>
+        </div>
+      </div>
+    `;
+  });
+  wrapper.innerHTML = html;
+
+  const swiper = new Swiper(".gallerySwiper", {
+    slidesPerView: 3,
+    grid: { rows: 3, fill: 'row' },
+    spaceBetween: 20,
+    autoplay: { delay: 2000, disableOnInteraction: false, pauseOnMouseEnter: true },
+    centeredSlides: false, 
+    slidesPerGroup: 1,
+    pagination: { el: ".swiper-pagination", clickable: true },
+    breakpoints: {
+      0: { slidesPerView: 1, grid: { rows: 3 } },
+      768: { slidesPerView: 2, grid: { rows: 3 } },
+      1024: { slidesPerView: 3, grid: { rows: 3 } }
+    }
+  });
+});
+
+window.openModal = function(imgSrc, title) {
+  const modal = document.getElementById('lightbox-modal');
+  const modalImg = document.getElementById('modal-img');
+  const modalTitle = document.getElementById('modal-title-text');
+  if(modal && modalImg) {
+    modalImg.src = imgSrc;
+    modalTitle.innerText = title;
+    modal.classList.add('is-visible');
+    document.body.style.overflow = 'hidden';
+  }
+};
+window.closeModal = function() {
+  const modal = document.getElementById('lightbox-modal');
+  if(modal) {
+    modal.classList.remove('is-visible');
+    document.body.style.overflow = 'auto';
+  }
+};
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') closeModal();
+});
+</script>
+
+<section class="section" id="abstract">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">
+      <span class="icon" style="color: #f39c12; margin-right: 8px;"><i class="fas fa-book-open"></i></span>Abstract
+    </h2>
+    <div class="columns is-centered is-vcentered">
+      <div class="column is-9">
+        <div class="content has-text-justified">
+          <p>
+            While Large Language Models (LLMs) have demonstrated proficiency in Deep Research or Wide Search, their capacity to solve highly complex questions—those requiring long-horizon planning, massive evidence gathering, and synthesis across heterogeneous sources—remains largely unexplored. We introduce <strong>Super Research</strong>, a task for complex autonomous research tasks that integrates (i) structured decomposition into a research plan, (ii) <strong>super wide</strong> retrieval for diverse perspectives, and (iii) <strong>super deep</strong> investigation to resolve uncertainties through iterative queries. 
+            To evaluate this capability, we curated a benchmark of 300 expert-written questions across diverse domains, each requiring up to 100+ retrieval steps and 1,000+ web pages to reconcile conflicting evidence. Super Research produces verifiable reports with fine-grained citations and intermediate artifacts (e.g., outlines and tables) to ensure traceable reasoning. Furthermore, we present a graph-anchored auditing protocol that evaluates Super Research along five dimensions: Coverage, Logical Consistency, Report Utility, Objectivity and Citation Health.
+            While super-complex questions may be infrequent in standard applications, Super Research serves as a critical ceiling evaluation and stress test for LLM capabilities. A model's proficiency within Super Research acts as a powerful proxy for its general research competence; success here suggests the robustness necessary to navigate nearly any subordinate research task. 
+          </p>
+        </div>
+      </div>
+      <div class="column is-9">
+        <div class="card">
+          <div class="card-content">
+            <figure class="image">
+              <img src="figures/intro_01.png" alt="Introduction Concept" onerror="this.src='figures/intro.png'">
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="methodology">
+  <div class="container is-widescreen">
+    <h2 class="title is-3 has-text-centered">
+      <span class="icon" style="color: #9b59b6; margin-right: 8px;"><i class="fas fa-project-diagram"></i></span>
+      Methodology & Framework
+    </h2>
+    <div class="content has-text-centered">
+      <p>Super Research employs a structured graph-based reasoning approach to handle high-stakes analytics.</p>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-12">
+        <div style="margin-bottom: 3.5rem;"> 
+          <figure class="image">
+            <img src="figures/pipeline_01.png" alt="Super Research Pipeline" onerror="this.src='figures/pipeline.png'" style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+            <figcaption class="has-text-justified mt-4 is-size-6 has-text-grey-dark" style="line-height: 1.6;">
+               <strong>Overview of the SuperResearch Benchmark framework.</strong> (a) <strong>Construction Pipeline:</strong> The process starts with the joint definition of 300+ "super hard" open-ended tasks, which undergo rigorous expert vetting. Autonomous agents then execute a long-horizon research process involving 100+ retrieval steps and the synthesis of 1,000+ web pages. The resulting "Gold Standard" consists of a structured Research Graph, canonical reports, and a question-answer (QA) exam. (b) <strong>Evaluation Flow:</strong> Research reports are audited via Research Graph Projection. The system maps claims from the generated report onto the ground-truth Research Graph to verify Nodes Recall (categorized into atomic facts and insights) and the integrity of Logical Connections, ensuring high-level conclusions are grounded in verifiable evidence. (c) <strong>Metrics Suite:</strong> A comprehensive five-dimensional suite quantifies model performance.
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+
+    <div class="box" style="background-color: #fafbfc; border: 1px solid #f1f3f5; box-shadow: none; padding: 2.5rem;">
+      <div class="columns is-vcentered">
+        
+        <div class="column is-5 has-text-centered">
+          <figure class="image">
+            <img src="figures/graph_01.png" alt="Graph Reasoning Structure" onerror="this.src='figures/graph.png'" style="border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          </figure>
+        </div>
+        
+        <div class="column is-7" style="padding-left: 2rem;">
+          <div class="content">
+            <h4 class="title is-4" style="color: #2c3e50; margin-bottom: 1rem;">Research Graph Construction Pipeline</h4>
+            <p class="has-text-grey-dark has-text-justified">
+              The process transforms unstructured sub-reports into a structured knowledge graph in three pivotal stages:
+            </p>
+            <ul style="margin-top: 1rem;">
+              <li style="margin-bottom: 0.8rem;">
+                <strong>(a) Fact Extraction:</strong> Decomposing unstructured text into atomic fact nodes anchored to specific URLs.
+              </li>
+              <li style="margin-bottom: 0.8rem;">
+                <strong>(b) Insight Abstraction:</strong> A collaborative human-AI process that derives higher-order reasoning nodes from fact clusters to build a bottom-up logic topology.
+              </li>
+              <li>
+                <strong>(c) Global Synthesis:</strong> Merging disparate evidence clusters inter-connected global conclusions that serve as the ground truth.
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section has-background-light" id="analysis">
+  <div class="container is-widescreen">
+    <h2 class="title is-3 has-text-centered">
+      <span class="icon" style="color: #2ecc71; margin-right: 8px;"><i class="fas fa-chart-pie"></i></span>
+      Data Analysis & Distribution
+    </h2>
+    <div class="content has-text-centered">
+      <p>Detailed analysis of the benchmark data distribution, core metrics, and cross-domain capabilities.</p>
+    </div>
+    
+    <div class="columns is-centered">
+      <div class="column is-12">
+        <div style="margin-bottom: 3.5rem;">
+          <figure class="image">
+            <img src="figures/data_dist_01.png" alt="Data Distribution" onerror="this.src='figures/data_dist.png'" style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+            <figcaption class="has-text-justified mt-4 is-size-6 has-text-grey-dark" style="line-height: 1.6;">
+              <strong>Structural and Functional Characterization of the SuperResearch Benchmark.</strong> 
+              (a) <strong>Quantitative Distribution:</strong> A Rose Chart illustrating the distribution of 300 expert-written tasks across 10 specialized domains. 
+              (b) <strong>Core Benchmark Metrics & Scale:</strong> Quantitative statistics characterizing the "ceiling-level" challenge across four key dimensions: <em>Complexity Metrics</em> (measuring reasoning depth and retrieval breadth), <em>Report Statistics</em> (tracking content volume and structure), <em>Graph Composition</em> (quantifying hierarchical knowledge density), and <em>Evaluation Questions</em>. 
+              (c) <strong>Example Tasks:</strong> Representative inquiries exhibiting multi-objective trade-offs and conflicting evidence.
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+    
+    <div class="box" style="background-color: #ffffff; border: 1px solid #f1f3f5; box-shadow: 0 4px 15px rgba(0,0,0,0.03); padding: 2.5rem;">
+      <div class="columns is-vcentered">
+        
+        <div class="column is-5 has-text-centered">
+          <figure class="image">
+            <img src="figures/benchmarking_domain_01.png" alt="Domain Benchmarking" onerror="this.src='figures/benchmarking_domain.png'" style="border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          </figure>
+        </div>
+        
+        <div class="column is-7" style="padding-left: 2rem;">
+          <div class="content">
+            <h4 class="title is-4" style="color: #2c3e50; margin-bottom: 1rem;">Cross-Domain Capabilities of LLMs</h4>
+            <p class="has-text-grey-dark has-text-justified">
+              Performance comparison across 10 specialized domains highlights the varying strengths of different model tiers:
+            </p>
+            <ul style="margin-top: 1rem;">
+              <li style="margin-bottom: 0.8rem;">
+                <strong>Comprehensive Evaluation:</strong> The radar chart illustrates the overall capability score for each model tier across diverse disciplines.
+              </li>
+              <li style="margin-bottom: 0.8rem;">
+                <strong>Domain Dominance:</strong> Advanced systems like Gemini Deep Research show particular dominance in business-analytical and technical-heavy sectors.
+              </li>
+              <li>
+                <strong>Identify Weaknesses:</strong> Pinpoints specific areas where native search or augmented baselines struggle with deep evidence synthesis compared to leading Agent frameworks.
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section has-background-light">
+  <div class="container is-widescreen">
+    <h2 class="title is-3 has-text-centered">
+      <span class="icon" style="color: #34495e; margin-right: 8px;"><i class="fas fa-balance-scale"></i></span>
+      Benchmark Comparison
+    </h2>
+    
+    <div class="content has-text-centered mb-6">
+      <p>
+        A comparative analysis of Super Research against existing agentic evaluation paradigms.
+      </p>
+    </div>
+    
+    <div class="columns is-centered">
+      <div class="column is-11">
+        <div class="table-container benchmark-table-wrapper">
+          <table class="table is-fullwidth benchmark-table">
+            <thead>
+              <tr>
+                <th width="12%">Dimensions</th>
+                <th width="15%">Metric</th>
+                <th width="15%">GAIA (Level 3)</th>
+                <th width="15%">WideSearch</th>
+                <th width="18%">DeepResearch Bench</th>
+                <th width="25%" class="ours-header">Super Research (Ours)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td rowspan="2" class="dim-col"><strong>Task Scope</strong></td>
+                <td class="metric-col">Goal</td>
+                <td>Precise Solving</td>
+                <td>Aggregation</td>
+                <td>Report Gen.</td>
+                <td class="ours-col"><strong>Strategic Planning & Discovery</strong></td>
+              </tr>
+              <tr>
+                <td class="metric-col">Paradigm</td>
+                <td>General Assistant</td>
+                <td>Info-Seeking</td>
+                <td>Research Agent</td>
+                <td class="ours-col"><strong>Super Deep Investigation</strong></td>
+              </tr>
+              <tr>
+                <td rowspan="2" class="dim-col"><strong>Complexity</strong></td>
+                <td class="metric-col">Depth (Steps)</td>
+                <td>10-40</td>
+                <td>~1.2</td>
+                <td>10-20</td>
+                <td class="ours-col"><strong>~100 (Max 140+)</strong></td>
+              </tr>
+              <tr>
+                <td class="metric-col">Width (Pages)</td>
+                <td>&lt; 20</td>
+                <td>~44</td>
+                <td>~110</td>
+                <td class="ours-col"><strong>~600 (Max 1,200+)</strong></td>
+              </tr>
+              <tr>
+                <td class="dim-col" style="border-bottom: none;"><strong>Evaluation</strong></td>
+                <td class="metric-col" style="border-bottom: none;">Method</td>
+                <td style="border-bottom: none;">Exact Match</td>
+                <td style="border-bottom: none;">F1 Score</td>
+                <td style="border-bottom: none;">Ref-Based Judge</td>
+                <td class="ours-col" style="border-bottom: none;"><strong>Graph-Anchored Auditing</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4 is-size-6 has-text-grey-dark has-text-justified" style="max-width: 1000px; margin: 0 auto; line-height: 1.6;">
+      <p>
+        <strong>Comparison of Super Research with Existing Agentic Benchmarks.</strong> Super Research represents a <strong>"Ceiling-Level"</strong> challenge compared to existing paradigms. While Wide Search focuses on horizontal data acquisition and DeepResearch Bench prioritizes vertical synthesis, Super Research integrates <em>Super Wide Retrieval</em> and <em>Super Deep Investigation</em>. Moreover, to address the limitations of shallow fact-recall metrics, we propose a <strong>Graph-Anchored Auditing</strong> protocol that can comprehensively evaluate reasoning depth, bias, and uncertainty.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .benchmark-table-wrapper { background: #fff; border-radius: 10px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); overflow: hidden; border: 1px solid #eaeaea; }
+  .benchmark-table { margin-bottom: 0; background-color: transparent; }
+  .benchmark-table th { background-color: #4a4a4a; color: #ffffff !important; font-size: 1.05rem; font-weight: 600; padding: 1.2rem 1rem !important; border: none !important; vertical-align: middle; }
+  .benchmark-table th.ours-header { background-color: #3498db; font-size: 1.1rem; box-shadow: 0 -4px 0 #3498db inset; }
+  .benchmark-table td { padding: 1rem 1rem !important; vertical-align: middle !important; border-bottom: 1px solid #f0f0f0; color: #444; }
+  .benchmark-table .dim-col { background-color: #fafbfc; border-right: 1px solid #f0f0f0; }
+  .benchmark-table .metric-col { color: #666; }
+  .benchmark-table .ours-col { background-color: #f4f9fd !important; color: #0b5394; border-left: 2px solid rgba(52, 152, 219, 0.2); border-right: 2px solid rgba(52, 152, 219, 0.2); }
+  .benchmark-table tbody tr:hover td:not(.ours-col):not(.dim-col) { background-color: #fdfdfd; }
+</style>
+
+<section class="section">
+  <div class="container is-widescreen">
+    <h2 class="title is-3 has-text-centered">
+      <span class="icon" style="color: #e67e22; margin-right: 8px;"><i class="fas fa-check-double"></i></span>
+      Graph-Anchored Auditing Validation
+    </h2>
+    
+    <div class="content has-text-centered mb-6">
+      <p>
+        Robust validation demonstrating the effectiveness and stability of our Graph-Anchored Auditing protocol.
+      </p>
+    </div>
+    
+    <div class="columns is-vcentered mt-2">
+      <div class="column is-7">
+        <figure class="image">
+          <img src="figures/ablation_responsiveness.png" alt="Evaluator Responsiveness Comparison" style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+        </figure>
+      </div>
+
+      <div class="column is-5">
+        <div class="table-container">
+          <table class="table is-bordered is-hoverable is-fullwidth is-striped" style="margin-bottom: 0;">
+            <thead>
+              <tr class="has-background-white-ter">
+                <th>Metric</th>
+                <th>Evaluator</th>
+                <th>Norm STD ($\sigma_{norm} \downarrow$)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td rowspan="2" style="vertical-align: middle;">Coverage ($\mathcal{R}$)</td>
+                <td>Ours Graph</td>
+                <td>4.42%</td>
+              </tr>
+              <tr>
+                <td>LLM Judge</td>
+                <td class="has-background-success-light"><strong>3.88%</strong></td>
+              </tr>
+              <tr>
+                <td rowspan="2" style="vertical-align: middle;">Consistency ($\mathcal{C}$)</td>
+                <td><strong>Ours Graph</strong></td>
+                <td class="has-background-success-light"><strong>0.83%</strong></td>
+              </tr>
+              <tr>
+                <td>LLM Judge</td>
+                <td>4.69%</td>
+              </tr>
+              <tr>
+                <td rowspan="2" style="vertical-align: middle;">Utility ($\mathcal{U}$)</td>
+                <td><strong>Ours Q&A</strong></td>
+                <td class="has-background-success-light"><strong>2.05%</strong></td>
+              </tr>
+              <tr>
+                <td>LLM Judge</td>
+                <td>4.37%</td>
+              </tr>
+              <tr>
+                <td rowspan="2" style="vertical-align: middle;">Objectivity ($\mathcal{O}$)</td>
+                <td><strong>Ours Q&A</strong></td>
+                <td class="has-background-success-light"><strong>1.07%</strong></td>
+              </tr>
+              <tr>
+                <td>LLM Judge</td>
+                <td>7.48%</td>
+              </tr>
+              <tr style="border-top: 2px solid #dbdbdb;">
+                <td rowspan="2" style="vertical-align: middle; font-weight: bold;">Overall</td>
+                <td><strong>Ours Method</strong></td>
+                <td class="has-background-success-light"><strong>1.67%</strong></td>
+              </tr>
+              <tr>
+                <td>LLM Judge</td>
+                <td>3.02%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4 is-size-6 has-text-grey-dark has-text-justified" style="max-width: 1000px; margin: 0 auto; line-height: 1.6;">
+      <p>
+        <strong>Evaluation Sensitivity Analysis.</strong> Compared to the LLM Judge, our Graph Metric shows superior responsiveness to quality fluctuations and significantly lower variance. <em>$\sigma_{norm}$ indicates the fluctuation as a percentage of the total score range (lower is better).</em>
+      </p>
+    </div>
+
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-widescreen">
+    <h2 class="title is-3 has-text-centered">
+      <span class="icon" style="color: #1abc9c; margin-right: 8px;"><i class="fas fa-laptop-code"></i></span>
+      Super Research Interface
+    </h2>
+    
+    <div class="content has-text-centered mb-6">
+      <p style="max-width: 900px; margin: 0 auto;">
+        We provide a comprehensive open-source web interface that empowers users to interactively construct complex research queries, monitor real-time agent execution (e.g., token usage and domains explored), verify fine-grained text citations, and visually audit the underlying reasoning graphs.
+      </p>
+    </div>
+    
+    <div class="swiper mySwiper mt-5">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <div class="box slider-box">
+             <figure class="image is-16by9"><img src="figures/web_question.png" alt="Editor Workbench"></figure>
+             <p class="has-text-centered mt-3 mb-1"><strong>Figure 1: Editor Workbench</strong></p>
+             <p class="is-size-7 has-text-grey has-text-centered">Formulate complex research plans and initialize agents.</p>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="box slider-box">
+             <figure class="image is-16by9"><img src="figures/ui_2.png" alt="Inspector Mode"></figure>
+             <p class="has-text-centered mt-3 mb-1"><strong>Figure 2: Inspector Mode</strong></p>
+             <p class="is-size-7 has-text-grey has-text-centered">Real-time tracking of token usage, source domains, and cost.</p>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="box slider-box">
+             <figure class="image is-16by9"><img src="figures/ui_1.png" alt="Detail View"></figure>
+             <p class="has-text-centered mt-3 mb-1"><strong>Figure 3: Detail View</strong></p>
+             <p class="is-size-7 has-text-grey has-text-centered">Verify fine-grained citations and intermediate reasoning artifacts.</p>
+          </div>
+        </div>
+        <div class="swiper-slide">
+          <div class="box slider-box">
+             <figure class="image is-16by9"><img src="figures/ui_4.png" alt="Graph View"></figure>
+             <p class="has-text-centered mt-3 mb-1"><strong>Figure 4: Graph View</strong></p>
+             <p class="is-size-7 has-text-grey has-text-centered">Visualize the structural topology of extracted facts and insights.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="swiper-button-next custom-swiper-nav"></div>
+      <div class="swiper-button-prev custom-swiper-nav"></div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .swiper { 
+    width: 100%; 
+    padding-top: 20px; 
+    padding-bottom: 60px; /* 增加底部间距，给分页点留出空间 */
+  }
+  
+  .swiper-slide { 
+    background-position: center; 
+    background-size: cover; 
+    width: 65%; /* 稍微加宽一点主体卡片 */
+    height: auto; 
+    transform: scale(0.85); 
+    opacity: 0.4; 
+    transition: transform 0.4s ease, opacity 0.4s ease; 
+  }
+  
+  .swiper-slide-active { 
+    transform: scale(1); 
+    opacity: 1; 
+    z-index: 10; 
+  }
+  
+  .slider-box { 
+    height: 100%; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08); /* 优化卡片阴影，显得更高级 */
+    border: 1px solid #f0f0f0;
+  }
+  
+  .slider-box img { 
+    object-fit: cover; 
+    border-radius: 4px;
+  }
+  
+  /* --- 自定义左右箭头样式 --- */
+  .custom-swiper-nav {
+    color: #2c3e50 !important;
+    background: rgba(255, 255, 255, 0.9);
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+  }
+  
+  .custom-swiper-nav:hover {
+    background: #3498db;
+    color: #ffffff !important;
+    transform: scale(1.1);
+  }
+
+  .custom-swiper-nav::after {
+    font-size: 1.5rem !important;
+    font-weight: bold;
+  }
+
+  @media (max-width: 768px) { 
+    .swiper-slide { width: 90%; } 
+    .custom-swiper-nav { display: none; } /* 手机端隐藏箭头，依赖手势滑动 */
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var swiper = new Swiper(".mySwiper", {
+      effect: "slide", 
+      grabCursor: true, 
+      centeredSlides: true, 
+      slidesPerView: "auto", 
+      loop: true,
+      
+      // 绑定左右切换按钮
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      
+      // 底部小圆点
+      pagination: { 
+        el: ".swiper-pagination", 
+        clickable: true 
+      },
+    });
+  });
+</script>
+
+<section class="section" id="demo">
+  <div class="container is-fullhd">
+    <h2 class="title is-3 has-text-centered">
+      <span class="icon" style="color: #e84393; margin-right: 8px;"><i class="fas fa-mouse-pointer"></i></span>
+      Interactive Visualization
+    </h2>
+    <div class="content has-text-centered mb-6">
+      <p>
+        Explore the <strong>Structured Reasoning</strong> process interactively. 
+        <br>
+        <span class="tag is-info is-light mt-2">Live Demo</span> The visualization below loads the research process from <code>annotation.json</code>.
+      </p>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-12">
+        <div class="box" style="padding: 0; overflow: hidden; height: 850px; border: 1px solid #eaeaea; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+          <iframe 
+            id="viz-iframe"
+            src="ui.html" 
+            style="width: 100%; height: 100%; border: none;"
+            title="Reasoning Visualization">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const iframe = document.getElementById('viz-iframe');
+    if (iframe) {
+        iframe.onload = async function() {
+          try {
+            const response = await fetch('annotation.json');
+            if (!response.ok) throw new Error('Failed to load annotation.json');
+            const jsonData = await response.json();
+            iframe.contentWindow.postMessage({ type: 'LOAD_DATA', payload: jsonData }, '*');
+          } catch (error) {
+            console.error("Error loading demo data:", error);
+          }
+        };
+    }
+  });
+</script>
+
+<section class="section" id="BibTeX">
+  <div class="container is-widescreen content">
+    <h2 class="title is-3 has-text-centered">
+      <span class="icon" style="color: #7f8c8d; margin-right: 8px;"><i class="fas fa-quote-right"></i></span>
+      BibTeX
+    </h2>
+    <pre style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background-color: #f8f9fa; padding: 1.5rem; border: 1px solid #eaeaea;"><code>@article{superresearch2026,
+  author    = {Author Name and Author Name},
+  title     = {Super Research: A High-Stakes Analytics Agent with Graph-Anchored Auditing},
+  journal   = {ArXiv},
+  year      = {2026},
+}</code></pre>
+  </div>
+</section>
+<style>
+  /* 强制将 body 背景变为透明，让底层的 Canvas 漏出来 */
+  body { background-color: transparent !important; }
+  /* 将原本的浅灰底色移交给最底部的 html 标签 */
+  html { background-color: #f8f9fa; }
+  /* 1. 让顶部标题区（Hero）背景透明，透出动画 */
+.hero {
+    background: transparent !important; 
+    border-bottom: none !important; /* 去掉底部的实线边框更美观 */
+}
+
+/* 2. 让 Data Analysis 这种带浅灰底色的区块也变成透明 */
+.section.has-background-light {
+    background-color: transparent !important;
+}
+
+/* 3. （可选）如果你觉得纯透明让文字不太好识别，可以给外层加一层极淡的毛玻璃效果 */
+.hero-body {
+    background: rgba(255, 255, 255, 0.0); 
+    border-radius: 16px;
+    margin: 1rem;
+}
+</style>
+
+<canvas id="network-bg" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; opacity: 0.8;"></canvas>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const canvas = document.getElementById('network-bg');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let nodes = [];
+
+    // 自适应窗口大小
+    function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // 生成多级节点: 
+    // Type 1: 枢纽节点 (5%，大尺寸，移动慢，连线范围广)
+    // Type 2: 连接节点 (20%，中尺寸)
+    // Type 3: 叶子节点 (75%，小尺寸，移动快)
+    const numNodes = Math.floor(width * height / 15000); 
+    for (let i = 0; i < numNodes; i++) {
+        let rand = Math.random();
+        let r, speed, type, alpha;
+        if (rand > 0.95) { 
+            r = Math.random() * 2 + 3.5; 
+            speed = 0.15; 
+            type = 1; 
+            alpha = 0.8;
+        } else if (rand > 0.75) { 
+            r = Math.random() * 1.5 + 2; 
+            speed = 0.3; 
+            type = 2; 
+            alpha = 0.5;
+        } else { 
+            r = Math.random() * 1 + 0.5; 
+            speed = 0.6; 
+            type = 3; 
+            alpha = 0.3;
+        }
+
+        nodes.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * speed,
+            vy: (Math.random() - 0.5) * speed,
+            radius: r,
+            type: type,
+            alpha: alpha
+        });
+    }
+
+    // 动画主循环
+    function draw() {
+        ctx.clearRect(0, 0, width, height);
+        
+        // 更新位置并绘制节点
+        for (let i = 0; i < numNodes; i++) {
+            let p = nodes[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            
+            // 边缘反弹
+            if (p.x < 0 || p.x > width) p.vx *= -1;
+            if (p.y < 0 || p.y > height) p.vy *= -1;
+            
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(52, 152, 219, ${p.alpha})`;
+            ctx.fill();
+        }
+        
+        // 绘制距离相近的节点连线
+        for (let i = 0; i < numNodes; i++) {
+            for (let j = i + 1; j < numNodes; j++) {
+                let p1 = nodes[i];
+                let p2 = nodes[j];
+                let dx = p1.x - p2.x;
+                let dy = p1.y - p2.y;
+                let dist = Math.sqrt(dx*dx + dy*dy);
+                
+                // 枢纽节点拥有更远的吸附连线距离
+                let maxDist = (p1.type === 1 || p2.type === 1) ? 200 : 120;
+                
+                if (dist < maxDist) {
+                    ctx.beginPath();
+                    ctx.moveTo(p1.x, p1.y);
+                    ctx.lineTo(p2.x, p2.y);
+                    // 距离越近，线条越清晰
+                    let opacity = (1 - dist/maxDist) * 0.25;
+                    ctx.strokeStyle = `rgba(52, 152, 219, ${opacity})`;
+                    ctx.lineWidth = 0.8;
+                    ctx.stroke();
+                }
+            }
+        }
+        requestAnimationFrame(draw);
+    }
+    draw();
+});
+</script>
+</body>
+</html>
