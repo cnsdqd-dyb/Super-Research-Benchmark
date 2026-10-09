@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Super Research</title>
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/force-graph"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -668,6 +668,14 @@ createApp({
             });
         };
 
+        // Feed the public embedded demo through the same pipeline as a JSON upload.
+        window.addEventListener('message', (event) => {
+            if (event.origin !== window.location.origin || event.source !== window.parent) return;
+            if (event.data?.type !== 'LOAD_DATA') return;
+            const data = Array.isArray(event.data.payload) ? event.data.payload[0] : event.data.payload;
+            if (data && typeof data === 'object' && data.global_graph) processData(data);
+        });
+
         // --- Network Logic (Retry) ---
         const fetchWithRetry = async (url, options, retries = 3) => {
             for (let i = 0; i < retries; i++) {
@@ -1322,52 +1330,7 @@ OUTPUT JSON: { "scores": [ { "id": 0, "score": number } ] }`;
     }
 }).mount('#app');
 
-window.addEventListener('message', function(event) {
-    // 1. 检查消息类型
-    if (event.data && event.data.type === 'LOAD_DATA') {
-        const incomingData = event.data.payload;
-        console.log("✅ Iframe received data:", incomingData);
 
-        // 2. 更新全局状态变量 currentState
-        // 您的 ui.html 依赖这个变量来显示内容
-        if (typeof currentState !== 'undefined') {
-            
-            // 容错处理：如果传入的是单个对象，将其包裹在数组中；如果是数组则直接使用
-            if (Array.isArray(incomingData)) {
-                currentState.structuredData = incomingData;
-            } else {
-                currentState.structuredData = [incomingData];
-            }
-            
-            // 重置索引和无结构数据（防止报错）
-            currentState.currentIndex = 0;
-            // 如果 annotation.json 里没有 unstructured 数据，给一个空数组防止 undefined 错误
-            if (!currentState.unstructuredData) {
-                currentState.unstructuredData = []; 
-            }
-
-            // 3. 核心步骤：调用渲染函数！
-            // 这行代码是必须的，否则界面不会变
-            if (typeof updateDisplay === 'function') {
-                console.log("🔄 Updating display...");
-                updateDisplay();
-            } else {
-                console.error("❌ updateDisplay function not found!");
-            }
-
-            // 4. (可选) 自动触发 MaxFlow 分析视图
-            // 加一点延迟，确保 Python 环境 (Pyodide) 已经准备好
-            setTimeout(() => {
-                if (typeof showMaxFlowAnalysis === 'function') {
-                    showMaxFlowAnalysis();
-                }
-            }, 500);
-            
-        } else {
-            console.error("❌ currentState is not defined in ui.html");
-        }
-    }
-});
 </script>
 </body>
 </html>

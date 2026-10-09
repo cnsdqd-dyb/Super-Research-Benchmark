@@ -1,0 +1,24 @@
+/* Original academic page layout; scientific content and interactive widgets are retained. */
+:root{--ink:#182c43;--muted:#637181;--line:#dee3e7;--paper:#faf9f6;--accent:#326d74}
+html{scroll-behavior:smooth;scroll-padding-top:80px}body{background:var(--paper)!important;color:var(--ink);font-family:Arial,sans-serif}
+.research-nav{position:sticky;top:0;z-index:30;display:flex;justify-content:space-between;align-items:center;gap:24px;padding:18px max(24px,calc((100vw - 1160px)/2));background:rgba(250,249,246,.96);border-bottom:1px solid var(--line)}
+.research-nav a{color:var(--ink);font-size:13px;text-decoration:none}.research-nav>div{display:flex;gap:22px;flex-wrap:wrap}.research-nav .wordmark{font-weight:700;font-size:17px;white-space:nowrap}.wordmark span{color:var(--muted);font-weight:400}
+.hero{background:var(--paper)!important;margin-bottom:0;border-bottom:1px solid var(--line)}.hero-body{padding:64px 16px 32px!important;margin:0!important}
+.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--accent);font-weight:700;margin:0 0 24px}
+.publication-title>div{display:none}.super-title{font-family:Georgia,serif;font-size:clamp(42px,6vw,72px);font-weight:400!important;background:none!important;-webkit-text-fill-color:var(--ink)!important;-webkit-text-stroke:0!important;filter:none!important;letter-spacing:-.04em}
+.subtitle-text{font-family:Georgia,serif;font-size:clamp(20px,2.5vw,28px)!important;line-height:1.45;max-width:850px;margin-top:24px}
+.publication-authors-flex{font-size:16px!important;line-height:1.8}.publication-authors-flex a{color:var(--accent)}
+.publication-institutions{font-size:14px!important}.paper-btn{border-radius:4px!important;background:var(--ink)!important;color:white!important;border:1px solid var(--ink)!important;box-shadow:none!important;font-size:13px!important}
+.paper-btn:hover{background:var(--accent)!important}.research-meta{max-width:940px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);padding:26px 20px;gap:24px;text-align:center}
+.research-meta span{font-size:12px;color:var(--muted)}.research-meta strong{display:block;font-size:22px;font-family:Georgia,serif;color:var(--ink);font-weight:400;margin-bottom:8px}
+.release-note{font-size:12px;color:var(--muted);max-width:850px;text-align:center;margin:0 auto 32px;padding:0 20px}
+.section{padding:56px 24px!important;border-bottom:1px solid var(--line);background:transparent!important}.section .container{max-width:1160px}
+.section h2.title.is-3{font-family:Georgia,serif;color:var(--ink);font-weight:400;font-size:32px;letter-spacing:-.02em;padding-bottom:0;margin-bottom:28px!important;text-align:left!important}
+.section h2.title.is-3::after{display:none}.section h2>.icon{display:none}.content{font-size:16px;line-height:1.8}.content.has-text-justified{text-align:left!important}
+.card,.box{box-shadow:none!important;border:1px solid var(--line)!important;border-radius:8px!important;background:white!important}.table-container{max-width:100%;overflow:auto}
+pre{overflow:auto;white-space:pre;max-width:100%}iframe{max-width:100%}.research-footer{display:flex;justify-content:space-between;gap:20px;padding:32px max(24px,calc((100vw - 1100px)/2));font-size:13px;color:var(--muted)}
+.research-footer a{color:var(--accent)}.copy-citation{font-size:12px;margin-bottom:14px}
+@media(max-width:700px){.research-nav{position:relative;align-items:flex-start;flex-direction:column;gap:12px;padding:18px 20px}.research-nav>div{gap:14px}.hero-body{padding:38px 4px 18px!important}.research-meta{grid-template-columns:1fr;gap:14px}.research-meta strong{font-size:20px;display:inline;margin-right:6px}.section{padding:36px 12px!important}.container{padding:12px!important}.publication-institutions{flex-wrap:wrap;gap:8px}.research-footer{flex-wrap:wrap;padding:24px 20px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+
+#leaderboard .container{width:100%;min-width:0}#leaderboard .table-container{display:block;max-width:100%;width:100%;overflow-x:auto!important;position:relative}.subtitle-text{font-weight:400!important}

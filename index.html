@@ -1,23 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script>
     window.MathJax = {
       tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']] 
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
       },
       svg: {
         fontCache: 'global'
       }
     };
   </script>
-
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
-  
+
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/vis-network.min.js"></script>
@@ -25,19 +23,19 @@
   <style>
         /* --- Section Separation & Title Enhancements --- */
         .section {
-          padding: 5rem 1.5rem !important; 
+          padding: 5rem 1.5rem !important;
           border-bottom: 1px solid rgba(0, 0, 0, 0.04);
         }
         .section:last-of-type {
           border-bottom: none;
         }
         .section h2.title.is-3 {
-          font-family: 'Castoro', serif; 
+          font-family: 'Castoro', serif;
           font-weight: 700;
-          color: #1a252f; 
+          color: #1a252f;
           position: relative;
-          padding-bottom: 20px; 
-          margin-bottom: 40px !important; 
+          padding-bottom: 20px;
+          margin-bottom: 40px !important;
         }
         .section h2.title.is-3::after {
           content: '';
@@ -45,9 +43,9 @@
           bottom: 0;
           left: 50%;
           transform: translateX(-50%);
-          width: 150px;  
-          height: 4px;  
-          background: linear-gradient(90deg, #30CFD0 0%, #330867 100%); 
+          width: 150px;
+          height: 4px;
+          background: linear-gradient(90deg, #30CFD0 0%, #330867 100%);
           border-radius: 2px;
         }
         /* 统一所有副标题文字的大小、颜色和间距 */
@@ -58,7 +56,7 @@
           color: #555 !important;
           font-size: 1.1rem;
         }
-        
+
         .progress-container { display: flex; align-items: center; gap: 10px; margin: 5px 0; }
         .progress-value { min-width: 60px; }
         #attention-graph { background-color: white; border-radius: 4px; margin-top: 1rem; height: 400px; border: 1px solid #ddd; }
@@ -91,18 +89,18 @@
     gtag('js', new Date());
     gtag('config', 'G-B9N9911MNC');
   </script>
-  
+
   <meta charset="utf-8">
-  <meta name="description" content="SUPER RESEARCH: Answering Highly Complex Questions with Large Language Models though Super Deep and Super Wide Research">
+  <meta name="description" content="SUPER RESEARCH: Answering Highly Complex Questions with Large Language Models through Super Deep and Super Wide Research">
   <meta name="keywords" content="LLM, Deep Research, Agent, Graph Reasoning, Benchmark">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SUPER RESEARCH: Answering Highly Complex Questions with Large Language Models though Super Deep and Super Wide Research</title>
+  <title>SUPER RESEARCH: Answering Highly Complex Questions with Large Language Models through Super Deep and Super Wide Research</title>
 
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
   <link rel="stylesheet" href="./static/css/bulma.min.css">
   <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
   <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
-  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <link rel="stylesheet" href="./static/css/index.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
@@ -111,13 +109,13 @@
     .table-container { overflow-x: auto; }
     .best-score { font-weight: bold; }
     .second-best { text-decoration: underline; }
-    .row-deep-research { background-color: #eef6fc; } 
-    .row-native-search { background-color: #fff8e1; } 
-    .row-augmented { background-color: #e8f5e9; } 
+    .row-deep-research { background-color: #eef6fc; }
+    .row-native-search { background-color: #fff8e1; }
+    .row-augmented { background-color: #e8f5e9; }
     .metric-header { font-size: 0.85em; color: #555; }
-    
+
     .super-title {
-      font-weight: 900; 
+      font-weight: 900;
       background: linear-gradient(to right, #30CFD0 0%, #330867 100%);
       -webkit-background-clip: text;
       background-clip: text;
@@ -130,16 +128,17 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script defer src="./static/js/fontawesome.all.min.js"></script>
   <script src="./static/js/index.js"></script>
-</head>
+<link rel="stylesheet" href="static/css/editorial.css">
+<link rel="icon" href="favicon.svg" type="image/svg+xml"></head>
 <body>
-<div style="border-bottom:1px solid #e5e7eb;padding:12px 24px;background:#f8fafc;font-family:system-ui,sans-serif;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px"><a href="https://cnsdqd-dyb.github.io/workshare/" style="font-weight:600;color:#334155;text-decoration:none">← WorkShare · Yubo Dong</a><a href="https://cnsdqd-dyb.github.io/workshare/2026/02/24/SuperResearch.html" style="color:#334155;text-decoration:none">Project note / 项目分享 ↗</a></div>
+<nav class="research-nav" aria-label="Main navigation"><a class="wordmark" href="https://cnsdqd-dyb.github.io/">Yubo Dong <span>/ research</span></a><div><a href="#abstract">Overview</a><a href="#methodology">Method</a><a href="#leaderboard">Leaderboard</a><a href="#demo">Explore</a><a href="#BibTeX">Cite</a><a href="https://github.com/ZJU-HeheFan">Group</a></div></nav>
 
 <section class="hero">
   <div class="hero-body">
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          
+          <p class="eyebrow">RESEARCH AGENTS / BENCHMARK / ARXIV 2026</p>
           <h1 class="title is-1 publication-title" style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 2rem;">
             <div style="margin-bottom: 15px;">
                 <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -160,16 +159,16 @@
             <span class="is-size-3 subtitle-text">Answering Highly Complex Questions with Large Language Models through Super Deep and Super Wide Research</span>
           </h1>
           <div class="is-size-5 publication-authors-flex">
-            <span class="author-block"><a href="#">Yubo Dong</a><sup>1</sup>,</span>
-            <span class="author-block"><a href="#">Nianhao You</a><sup>1</sup>,</span>
-            <span class="author-block"><a href="#">Yuxuan Hou</a><sup>1</sup>,</span>
-            <span class="author-block"><a href="#">Zixun Sun</a><sup>1</sup>,</span>
-            <span class="author-block"><a href="#">Yue Zhang</a><sup>1</sup>,</span>
-            <span class="author-block"><a href="#">Liang Zhang</a><sup>2</sup>,</span>
-            <span class="author-block"><a href="#">Siyuan Zhao</a><sup>2</sup>,</span>
-            <span class="author-block"><a href="#">Hehe Fan</a><sup>1, ✉</sup></span>
+            <span class="author-block"><a href="https://cnsdqd-dyb.github.io/">Yubo Dong</a><sup>1</sup>,</span>
+            <span class="author-block">Nianhao You<sup>1</sup>,</span>
+            <span class="author-block"><a href="https://yuxuan-hou-x.github.io/">Yuxuan Hou</a><sup>1</sup>,</span>
+            <span class="author-block">Zixun Sun<sup>1</sup>,</span>
+            <span class="author-block">Yue Zhang<sup>1</sup>,</span>
+            <span class="author-block">Liang Zhang<sup>2</sup>,</span>
+            <span class="author-block">Siyuan Zhao<sup>2</sup>,</span>
+            <span class="author-block"><a href="https://hehefan.github.io/">Hehe Fan</a><sup>1, ✉</sup></span>
           </div>
-          
+
           <div class="is-size-5 publication-institutions">
             <span class="author-block"><sup>1</sup>Zhejiang University,</span>
             <span class="author-block"><sup>2</sup>Ant Group</span>
@@ -178,15 +177,15 @@
           <div class="column has-text-centered">
             <div class="publication-links">
               <span class="link-block">
-                <a href="#" class="external-link button is-normal is-rounded is-dark paper-btn">
+                <a href="https://arxiv.org/abs/2603.00582" class="external-link button is-normal is-rounded is-dark paper-btn">
                   <span class="icon"><i class="fas fa-file-pdf"></i></span>
                   <span>Paper</span>
                 </a>
               </span>
               <span class="link-block">
-                <a href="#" class="external-link button is-normal is-rounded is-dark paper-btn">
+                <a href="https://github.com/cnsdqd-dyb/Super-Research-Benchmark" class="external-link button is-normal is-rounded is-dark paper-btn">
                   <span class="icon"><i class="fab fa-github"></i></span>
-                  <span>Code</span>
+                  <span>Project repository</span>
                 </a>
               </span>
               <span class="link-block">
@@ -212,6 +211,8 @@
       </div>
     </div>
   </div>
+<div class="research-meta"><span><strong>300</strong> expert-written questions</span><span><strong>Deep + wide</strong> evidence gathering</span><span><strong>Graph-anchored</strong> auditing</span></div>
+<p class="release-note">Public benchmark and project materials. arXiv preprint; this page does not claim conference acceptance or a complete agent implementation release.</p>
 </section>
 
 
@@ -289,7 +290,7 @@
             <div class="field">
               <label class="label is-small">Search</label>
               <div class="control has-icons-left">
-                <input class="input is-small" type="text" id="search-input" placeholder="Search model name..." onkeyup="renderLeaderboard()">
+                <input class="input is-small" type="text" id="search-input" placeholder="Search model name..." oninput="renderLeaderboard()">
                 <span class="icon is-small is-left">
                   <i class="fas fa-search"></i>
                 </span>
@@ -313,13 +314,13 @@
           <tbody id="leaderboard-body"></tbody>
         </table>
       </div>
-      
+
       <div class="content is-small has-text-justified mt-4" style="line-height: 1.6; color: #555;">
         <p>
-          Evaluation of representative research systems across three architectural paradigms: 
-          <span style="background-color: #eef6fc; padding: 2px 6px; border-radius: 4px; color: #0d47a1;">Deep Research System</span>, 
-          <span style="background-color: #fff8e1; padding: 2px 6px; border-radius: 4px; color: #ff6f00;">Native Search-Integrated Agent</span>, and 
-          <span style="background-color: #e8f5e9; padding: 2px 6px; border-radius: 4px; color: #1b5e20;">Search-Augmented Agent</span>. 
+          Evaluation of representative research systems across three architectural paradigms:
+          <span style="background-color: #eef6fc; padding: 2px 6px; border-radius: 4px; color: #0d47a1;">Deep Research System</span>,
+          <span style="background-color: #fff8e1; padding: 2px 6px; border-radius: 4px; color: #ff6f00;">Native Search-Integrated Agent</span>, and
+          <span style="background-color: #e8f5e9; padding: 2px 6px; border-radius: 4px; color: #1b5e20;">Search-Augmented Agent</span>.
           <strong>Bold</strong> and <u>underline</u> denote the best and second-best performance, respectively; $\uparrow$ ($\downarrow$) indicates that higher (lower) values are preferred.
         </p>
         <ul style="list-style-type: none; margin-left: 0; padding-left: 0; margin-top: 0.5rem;" id="legend-list">
@@ -368,15 +369,15 @@
   const lowerIsBetter = ['dominance', 'monopoly', 'uncited', 'cost', 'time'];
   const mainMetrics = ['overall', 'coverage', 'consistency', 'utility', 'objectivity', 'novelty', 'dominance', 'monopoly', 'uncited', 'cost', 'time', 'length', 'urls'];
   const domainMetrics = ['arts', 'comp', 'cons', 'env', 'fin', 'med', 'sci', 'soc', 'tour', 'trans'];
-  
+
   const metricLabels = {
-    overall: "Overall", coverage: "Cov", consistency: "Cons", utility: "Util", objectivity: "Obj", novelty: "Nov", 
+    overall: "Overall", coverage: "Cov", consistency: "Cons", utility: "Util", objectivity: "Obj", novelty: "Nov",
     dominance: "Dom", monopoly: "Mono", uncited: "Unc", cost: "Cost", time: "Time(s)", length: "Length", urls: "URLs",
-    arts: "Arts & Crea.", comp: "Comp. & Oth.", cons: "Cons. & E-com.", env: "Env. & Ene.", fin: "Fin. & Bus.", 
+    arts: "Arts & Crea.", comp: "Comp. & Oth.", cons: "Cons. & E-com.", env: "Env. & Ene.", fin: "Fin. & Bus.",
     med: "Med. & Health", sci: "Sci. & Eng.", soc: "Soc. & Hum.", tour: "Tour. & Lei.", trans: "Trans. & Log."
   };
 
-  let currentSort = { key: 'overall', dir: 'desc' }; 
+  let currentSort = { key: 'overall', dir: 'desc' };
   let currentView = 'main';
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -398,7 +399,7 @@
   function switchView() {
     currentView = document.getElementById('filter-view').value;
     currentSort = { key: currentView === 'main' ? 'overall' : 'arts', dir: 'desc' };
-    
+
     // Update headers
     const thead = document.getElementById('leaderboard-thead');
     let headersHTML = `<tr>
@@ -406,22 +407,22 @@
       <th class="sortable is-hidden-mobile" onclick="sortTable('org')" style="white-space: nowrap;">Org <span class="icon sort-icon"><i class="fas fa-sort"></i></span></th>
       <th class="sortable is-hidden-touch" onclick="sortTable('method')" style="white-space: nowrap;">Method <span class="icon sort-icon"><i class="fas fa-sort"></i></span></th>
     `;
-    
+
     const activeMetrics = currentView === 'main' ? mainMetrics : domainMetrics;
-    
+
     activeMetrics.forEach(metric => {
       const isLowerBetter = lowerIsBetter.includes(metric);
       const arrow = isLowerBetter ? '$\\downarrow$' : '$\\uparrow$';
       const isOverall = metric === 'overall';
       const style = isOverall ? 'background-color: #f5f5f5; white-space: nowrap;' : 'white-space: nowrap;';
       const label = isOverall ? `<strong>Overall</strong>` : metricLabels[metric];
-      
+
       headersHTML += `<th class="sortable has-text-right" onclick="sortTable('${metric}')" style="${style}">${label} (${arrow}) <span class="icon sort-icon"><i class="fas fa-sort"></i></span></th>`;
     });
-    
+
     headersHTML += `</tr>`;
     thead.innerHTML = headersHTML;
-    
+
     // Update Legend
     const legendList = document.getElementById('legend-list');
     if (currentView === 'main') {
@@ -454,13 +455,13 @@
     let filteredData = leaderboardData.filter(item => {
       const matchBase = baseFilter === 'all' || item.base === baseFilter;
       const matchMethod = methodFilter === 'all' || item.method === methodFilter;
-      const matchSearch = item.model.toLowerCase().includes(searchText) || 
+      const matchSearch = item.model.toLowerCase().includes(searchText) ||
                           item.org.toLowerCase().includes(searchText);
       return matchBase && matchMethod && matchSearch;
     });
 
     const activeMetrics = currentView === 'main' ? mainMetrics : domainMetrics;
-    const stats = calculateStats(leaderboardData, activeMetrics); 
+    const stats = calculateStats(leaderboardData, activeMetrics);
 
     filteredData.sort((a, b) => {
       let valA = a[currentSort.key];
@@ -519,7 +520,7 @@
     let displayValue = (typeof value === 'number' && value % 1 !== 0) ? value.toFixed(2) : value;
     return `<td class="has-text-right ${styleClass}" style="vertical-align: middle; ${extraStyle}">${displayValue}</td>`;
   }
-  
+
   function calculateStats(data, metrics) {
     const stats = {};
     metrics.forEach(key => {
@@ -547,7 +548,7 @@
     document.querySelectorAll('#leaderboard-thead .sortable').forEach(th => {
       th.classList.remove('sorted-asc', 'sorted-desc');
       const icon = th.querySelector('.icon i');
-      if(icon) icon.className = 'fas fa-sort'; 
+      if(icon) icon.className = 'fas fa-sort';
       if (th.getAttribute('onclick') && th.getAttribute('onclick').includes(`'${currentSort.key}'`)) {
         th.classList.add(currentSort.dir === 'asc' ? 'sorted-asc' : 'sorted-desc');
         if(icon) icon.className = currentSort.dir === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
@@ -590,7 +591,7 @@
       <button class="modal-close-btn" onclick="closeModal()">×</button>
     </div>
     <div class="modal-body">
-      <img id="modal-img" src="" alt="Full Report">
+      <img id="modal-img" alt="Full Report">
       <div class="modal-placeholder"><p>--- End of Report ---</p></div>
     </div>
   </div>
@@ -636,10 +637,10 @@ document.addEventListener('DOMContentLoaded', function () {
   items.forEach(item => {
     // 获取图片路径，比如 figures/r1.png
     const reportImg = item.imgPath ? item.imgPath : `figures/r${item.id}.png`;
-    
+
     html += `
       <div class="swiper-slide" style="padding: 10px;">
-        <div class="question-card" 
+        <div class="question-card"
              style="
                 position: relative;
                 overflow: hidden;
@@ -647,26 +648,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 background-image: url('${reportImg}');
                 background-size: cover;
                 background-position: top center;
-                height: 0 !important; 
+                height: 0 !important;
                 padding-bottom: 75% !important; /* 利用 padding-bottom 实现严格的 4:3 比例 */
                 display: block !important; /* 覆盖旧的 flex 布局 */
              "
              onclick="openModal('${reportImg}', 'Report #0${item.id}')">
-             
+
           <div style="
                 position: absolute;
                 top: 0; left: 0; right: 0; bottom: 0;
                 background: linear-gradient(${item.color});
                 mix-blend-mode: hard-light; /* 关键：让彩色和底图混合透出细节 */
-                
+
                 /* 新增下面这两行来实现模糊效果 */
-                backdrop-filter: blur(2px); 
+                backdrop-filter: blur(2px);
                 -webkit-backdrop-filter: blur(2px); /* 专门兼容 Safari 浏览器 */
-                
+
                 z-index: 1;
                 pointer-events: none;
           "></div>
-          
+
           <div style="
                 position: absolute;
                 bottom: 20px;
@@ -678,7 +679,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="question-id" style="color: black; font-size: 4.1rem; margin-bottom: 5px; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">Report ${item.id}</div>
             <div class="question-text" style="color: black; font-size: 4.1rem; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">${item.q}</div>
           </div>
-          
+
         </div>
       </div>
     `;
@@ -686,19 +687,19 @@ document.addEventListener('DOMContentLoaded', function () {
   wrapper.innerHTML = html;
 
   const swiper = new Swiper(".gallerySwiper", {
-    slidesPerView: 1, 
+    slidesPerView: 1,
     spaceBetween: 40, // 增加卡片之间的间距，视觉上更舒展
     autoplay: { delay: 3000, disableOnInteraction: false, pauseOnMouseEnter: true },
     loop: true, // 开启无限循环滚动
     pagination: { el: ".swiper-pagination", clickable: true, dynamicBullets: true },
     breakpoints: {
-      768: { 
+      768: {
         slidesPerView: 1.5, // 平板端显示 1 个完整的 + 半个露出的
-        centeredSlides: true 
+        centeredSlides: true
       },
-      1200: { 
+      1200: {
         slidesPerView: 2, // 宽屏电脑端只显示 2 个大卡片（原来是3个），因此尺寸会大幅增加！
-        centeredSlides: false 
+        centeredSlides: false
       }
     }
   });
@@ -736,9 +737,9 @@ document.addEventListener('keydown', function (e) {
       <div class="column is-9">
         <div class="content has-text-justified">
           <p>
-            While Large Language Models (LLMs) have demonstrated proficiency in Deep Research or Wide Search, their capacity to solve highly complex questions—those requiring long-horizon planning, massive evidence gathering, and synthesis across heterogeneous sources—remains largely unexplored. We introduce <strong>Super Research</strong>, a task for complex autonomous research tasks that integrates (i) structured decomposition into a research plan, (ii) <strong>super wide</strong> retrieval for diverse perspectives, and (iii) <strong>super deep</strong> investigation to resolve uncertainties through iterative queries. 
+            While Large Language Models (LLMs) have demonstrated proficiency in Deep Research or Wide Search, their capacity to solve highly complex questions—those requiring long-horizon planning, massive evidence gathering, and synthesis across heterogeneous sources—remains largely unexplored. We introduce <strong>Super Research</strong>, a task for complex autonomous research tasks that integrates (i) structured decomposition into a research plan, (ii) <strong>super wide</strong> retrieval for diverse perspectives, and (iii) <strong>super deep</strong> investigation to resolve uncertainties through iterative queries.
             To evaluate this capability, we curated a benchmark of 300 expert-written questions across diverse domains, each requiring up to 100+ retrieval steps and 1,000+ web pages to reconcile conflicting evidence. Super Research produces verifiable reports with fine-grained citations and intermediate artifacts (e.g., outlines and tables) to ensure traceable reasoning. Furthermore, we present a graph-anchored auditing protocol that evaluates Super Research along five dimensions: Coverage, Logical Consistency, Report Utility, Objectivity and Citation Health.
-            While super-complex questions may be infrequent in standard applications, Super Research serves as a critical ceiling evaluation and stress test for LLM capabilities. A model's proficiency within Super Research acts as a powerful proxy for its general research competence; success here suggests the robustness necessary to navigate nearly any subordinate research task. 
+            While super-complex questions may be infrequent in standard applications, Super Research serves as a critical ceiling evaluation and stress test for LLM capabilities. A model's proficiency within Super Research acts as a powerful proxy for its general research competence; success here suggests the robustness necessary to navigate nearly any subordinate research task.
           </p>
         </div>
       </div>
@@ -767,7 +768,7 @@ document.addEventListener('keydown', function (e) {
 
     <div class="columns is-centered">
       <div class="column is-12">
-        <div style="margin-bottom: 3.5rem;"> 
+        <div style="margin-bottom: 3.5rem;">
           <figure class="image">
             <img src="figures/pipeline_01.png" alt="Super Research Pipeline" onerror="this.src='figures/pipeline.png'" style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
             <figcaption class="has-text-justified mt-4 is-size-6 has-text-grey-dark" style="line-height: 1.6;">
@@ -780,13 +781,13 @@ document.addEventListener('keydown', function (e) {
 
     <div class="box" style="background-color: #fafbfc; border: 1px solid #f1f3f5; box-shadow: none; padding: 2.5rem;">
       <div class="columns is-vcentered">
-        
+
         <div class="column is-5 has-text-centered">
           <figure class="image">
             <img src="figures/graph_01.png" alt="Graph Reasoning Structure" onerror="this.src='figures/graph.png'" style="border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
           </figure>
         </div>
-        
+
         <div class="column is-7" style="padding-left: 2rem;">
           <div class="content">
             <h4 class="title is-4" style="color: #2c3e50; margin-bottom: 1rem;">Research Graph Construction Pipeline</h4>
@@ -806,7 +807,7 @@ document.addEventListener('keydown', function (e) {
             </ul>
           </div>
         </div>
-        
+
       </div>
     </div>
   </div>
@@ -821,32 +822,32 @@ document.addEventListener('keydown', function (e) {
     <div class="content has-text-centered">
       <p>Detailed analysis of the benchmark data distribution, core metrics, and cross-domain capabilities.</p>
     </div>
-    
+
     <div class="columns is-centered">
       <div class="column is-12">
         <div style="margin-bottom: 3.5rem;">
           <figure class="image">
             <img src="figures/data_dist_01.png" alt="Data Distribution" onerror="this.src='figures/data_dist.png'" style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
             <figcaption class="has-text-justified mt-4 is-size-6 has-text-grey-dark" style="line-height: 1.6;">
-              <strong>Structural and Functional Characterization of the SuperResearch Benchmark.</strong> 
-              (a) <strong>Quantitative Distribution:</strong> A Rose Chart illustrating the distribution of 300 expert-written tasks across 10 specialized domains. 
-              (b) <strong>Core Benchmark Metrics & Scale:</strong> Quantitative statistics characterizing the "ceiling-level" challenge across four key dimensions: <em>Complexity Metrics</em> (measuring reasoning depth and retrieval breadth), <em>Report Statistics</em> (tracking content volume and structure), <em>Graph Composition</em> (quantifying hierarchical knowledge density), and <em>Evaluation Questions</em>. 
+              <strong>Structural and Functional Characterization of the SuperResearch Benchmark.</strong>
+              (a) <strong>Quantitative Distribution:</strong> A Rose Chart illustrating the distribution of 300 expert-written tasks across 10 specialized domains.
+              (b) <strong>Core Benchmark Metrics & Scale:</strong> Quantitative statistics characterizing the "ceiling-level" challenge across four key dimensions: <em>Complexity Metrics</em> (measuring reasoning depth and retrieval breadth), <em>Report Statistics</em> (tracking content volume and structure), <em>Graph Composition</em> (quantifying hierarchical knowledge density), and <em>Evaluation Questions</em>.
               (c) <strong>Example Tasks:</strong> Representative inquiries exhibiting multi-objective trade-offs and conflicting evidence.
             </figcaption>
           </figure>
         </div>
       </div>
     </div>
-    
+
     <div class="box" style="background-color: #ffffff; border: 1px solid #f1f3f5; box-shadow: 0 4px 15px rgba(0,0,0,0.03); padding: 2.5rem;">
       <div class="columns is-vcentered">
-        
+
         <div class="column is-5 has-text-centered">
           <figure class="image">
             <img src="figures/benchmarking_domain_01.png" alt="Domain Benchmarking" onerror="this.src='figures/benchmarking_domain.png'" style="border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
           </figure>
         </div>
-        
+
         <div class="column is-7" style="padding-left: 2rem;">
           <div class="content">
             <h4 class="title is-4" style="color: #2c3e50; margin-bottom: 1rem;">Cross-Domain Capabilities of LLMs</h4>
@@ -866,7 +867,7 @@ document.addEventListener('keydown', function (e) {
             </ul>
           </div>
         </div>
-        
+
       </div>
     </div>
   </div>
@@ -879,13 +880,13 @@ document.addEventListener('keydown', function (e) {
       <span class="icon" style="color: #34495e; margin-right: 8px;"><i class="fas fa-balance-scale"></i></span>
       Benchmark Comparison
     </h2>
-    
+
     <div class="content has-text-centered mb-6">
       <p>
         A comparative analysis of Super Research against existing agentic evaluation paradigms.
       </p>
     </div>
-    
+
     <div class="columns is-centered">
       <div class="column is-11">
         <div class="table-container benchmark-table-wrapper">
@@ -972,13 +973,13 @@ document.addEventListener('keydown', function (e) {
       <span class="icon" style="color: #e67e22; margin-right: 8px;"><i class="fas fa-check-double"></i></span>
       Graph-Anchored Auditing Validation
     </h2>
-    
+
     <div class="content has-text-centered mb-6">
       <p>
         Robust validation demonstrating the effectiveness and stability of our Graph-Anchored Auditing protocol.
       </p>
     </div>
-    
+
     <div class="columns is-vcentered mt-2">
       <div class="column is-7">
         <figure class="image">
@@ -1064,13 +1065,13 @@ document.addEventListener('keydown', function (e) {
       <span class="icon" style="color: #1abc9c; margin-right: 8px;"><i class="fas fa-laptop-code"></i></span>
       Super Research Interface
     </h2>
-    
+
     <div class="content has-text-centered mb-6">
       <p style="max-width: 900px; margin: 0 auto;">
         We provide a comprehensive open-source web interface that empowers users to interactively construct complex research queries, monitor real-time agent execution (e.g., token usage and domains explored), verify fine-grained text citations, and visually audit the underlying reasoning graphs.
       </p>
     </div>
-    
+
     <div class="swiper mySwiper mt-5">
       <div class="swiper-wrapper">
         <div class="swiper-slide">
@@ -1102,7 +1103,7 @@ document.addEventListener('keydown', function (e) {
           </div>
         </div>
       </div>
-      
+
       <div class="swiper-button-next custom-swiper-nav"></div>
       <div class="swiper-button-prev custom-swiper-nav"></div>
       <div class="swiper-pagination"></div>
@@ -1111,39 +1112,39 @@ document.addEventListener('keydown', function (e) {
 </section>
 
 <style>
-  .swiper { 
-    width: 100%; 
-    padding-top: 20px; 
+  .swiper {
+    width: 100%;
+    padding-top: 20px;
     padding-bottom: 60px; /* 增加底部间距，给分页点留出空间 */
   }
-  
-  .swiper-slide { 
-    background-position: center; 
-    background-size: cover; 
+
+  .swiper-slide {
+    background-position: center;
+    background-size: cover;
     width: 65%; /* 稍微加宽一点主体卡片 */
-    height: auto; 
-    transform: scale(0.85); 
-    opacity: 0.4; 
-    transition: transform 0.4s ease, opacity 0.4s ease; 
+    height: auto;
+    transform: scale(0.85);
+    opacity: 0.4;
+    transition: transform 0.4s ease, opacity 0.4s ease;
   }
-  
-  .swiper-slide-active { 
-    transform: scale(1); 
-    opacity: 1; 
-    z-index: 10; 
+
+  .swiper-slide-active {
+    transform: scale(1);
+    opacity: 1;
+    z-index: 10;
   }
-  
-  .slider-box { 
-    height: 100%; 
+
+  .slider-box {
+    height: 100%;
     box-shadow: 0 10px 30px rgba(0,0,0,0.08); /* 优化卡片阴影，显得更高级 */
     border: 1px solid #f0f0f0;
   }
-  
-  .slider-box img { 
-    object-fit: cover; 
+
+  .slider-box img {
+    object-fit: cover;
     border-radius: 4px;
   }
-  
+
   /* --- 自定义左右箭头样式 --- */
   .custom-swiper-nav {
     color: #2c3e50 !important;
@@ -1154,7 +1155,7 @@ document.addEventListener('keydown', function (e) {
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     transition: all 0.2s ease;
   }
-  
+
   .custom-swiper-nav:hover {
     background: #3498db;
     color: #ffffff !important;
@@ -1166,8 +1167,8 @@ document.addEventListener('keydown', function (e) {
     font-weight: bold;
   }
 
-  @media (max-width: 768px) { 
-    .swiper-slide { width: 90%; } 
+  @media (max-width: 768px) {
+    .swiper-slide { width: 90%; }
     .custom-swiper-nav { display: none; } /* 手机端隐藏箭头，依赖手势滑动 */
   }
 </style>
@@ -1175,22 +1176,22 @@ document.addEventListener('keydown', function (e) {
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     var swiper = new Swiper(".mySwiper", {
-      effect: "slide", 
-      grabCursor: true, 
-      centeredSlides: true, 
-      slidesPerView: "auto", 
+      effect: "slide",
+      grabCursor: true,
+      centeredSlides: true,
+      slidesPerView: "auto",
       loop: true,
-      
+
       // 绑定左右切换按钮
       navigation: {
         nextEl: ".swiper-button-next",
         prevEl: ".swiper-button-prev",
       },
-      
+
       // 底部小圆点
-      pagination: { 
-        el: ".swiper-pagination", 
-        clickable: true 
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true
       },
     });
   });
@@ -1204,7 +1205,7 @@ document.addEventListener('keydown', function (e) {
     </h2>
     <div class="content has-text-centered mb-6">
       <p>
-        Explore the <strong>Structured Reasoning</strong> process interactively. 
+        Explore the <strong>Structured Reasoning</strong> process interactively.
         <br>
         <span class="tag is-info is-light mt-2">Live Demo</span> The visualization below loads the research process from <code>annotation.json</code>.
       </p>
@@ -1213,9 +1214,9 @@ document.addEventListener('keydown', function (e) {
     <div class="columns is-centered">
       <div class="column is-12">
         <div class="box" style="padding: 0; overflow: hidden; height: 850px; border: 1px solid #eaeaea; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-          <iframe 
+          <iframe
             id="viz-iframe"
-            src="ui.html" 
+            src="ui.html"
             style="width: 100%; height: 100%; border: none;"
             title="Reasoning Visualization">
           </iframe>
@@ -1249,10 +1250,11 @@ document.addEventListener('keydown', function (e) {
       <span class="icon" style="color: #7f8c8d; margin-right: 8px;"><i class="fas fa-quote-right"></i></span>
       BibTeX
     </h2>
+    <button class="copy-citation button" type="button">Copy BibTeX</button>
     <pre style="border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background-color: #f8f9fa; padding: 1.5rem; border: 1px solid #eaeaea;"><code>@article{superresearch2026,
-  title={Super Research: Answering Highly Complex Questions with Large Language Models though Super Deep and Super Wide Research},
-  author={Yubo Dong, Nianhao You, Yuxuan Hou, Zixun Sun, Yue Zhang, Liang Zhang, Siyuan Zhao, Yi Lin, Hehe Fan},
-  journal={ArXiv},
+  title={Super Research: Answering Highly Complex Questions with Large Language Models through Super Deep and Super Wide Research},
+  author={Dong, Yubo and You, Nianhao and Hou, Yuxuan and Sun, Zixun and Zhang, Yue and Zhang, Liang and Zhao, Siyuan and Fan, Hehe},
+  journal={arXiv preprint arXiv:2603.00582},
   year={2026}
 }</code></pre>
   </div>
@@ -1264,7 +1266,7 @@ document.addEventListener('keydown', function (e) {
   html { background-color: #f8f9fa; }
   /* 1. 让顶部标题区（Hero）背景透明，透出动画 */
 .hero {
-    background: transparent !important; 
+    background: transparent !important;
     border-bottom: none !important; /* 去掉底部的实线边框更美观 */
 }
 
@@ -1275,113 +1277,20 @@ document.addEventListener('keydown', function (e) {
 
 /* 3. （可选）如果你觉得纯透明让文字不太好识别，可以给外层加一层极淡的毛玻璃效果 */
 .hero-body {
-    background: rgba(255, 255, 255, 0.0); 
+    background: rgba(255, 255, 255, 0.0);
     border-radius: 16px;
     margin: 1rem;
 }
 </style>
 
-<canvas id="network-bg" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; opacity: 0.8;"></canvas>
 
+<footer class="research-footer"><a href="https://cnsdqd-dyb.github.io/">Yubo Dong</a><span>Super Research / 2026</span><a href="https://github.com/ZJU-HeheFan">ZJU-HeheFan</a></footer>
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const canvas = document.getElementById('network-bg');
-    const ctx = canvas.getContext('2d');
-    let width, height;
-    let nodes = [];
-
-    // 自适应窗口大小
-    function resize() {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    // 生成多级节点: 
-    // Type 1: 枢纽节点 (5%，大尺寸，移动慢，连线范围广)
-    // Type 2: 连接节点 (20%，中尺寸)
-    // Type 3: 叶子节点 (75%，小尺寸，移动快)
-    const numNodes = Math.floor(width * height / 15000); 
-    for (let i = 0; i < numNodes; i++) {
-        let rand = Math.random();
-        let r, speed, type, alpha;
-        if (rand > 0.95) { 
-            r = Math.random() * 2 + 3.5; 
-            speed = 0.15; 
-            type = 1; 
-            alpha = 0.8;
-        } else if (rand > 0.75) { 
-            r = Math.random() * 1.5 + 2; 
-            speed = 0.3; 
-            type = 2; 
-            alpha = 0.5;
-        } else { 
-            r = Math.random() * 1 + 0.5; 
-            speed = 0.6; 
-            type = 3; 
-            alpha = 0.3;
-        }
-
-        nodes.push({
-            x: Math.random() * width,
-            y: Math.random() * height,
-            vx: (Math.random() - 0.5) * speed,
-            vy: (Math.random() - 0.5) * speed,
-            radius: r,
-            type: type,
-            alpha: alpha
-        });
-    }
-
-    // 动画主循环
-    function draw() {
-        ctx.clearRect(0, 0, width, height);
-        
-        // 更新位置并绘制节点
-        for (let i = 0; i < numNodes; i++) {
-            let p = nodes[i];
-            p.x += p.vx;
-            p.y += p.vy;
-            
-            // 边缘反弹
-            if (p.x < 0 || p.x > width) p.vx *= -1;
-            if (p.y < 0 || p.y > height) p.vy *= -1;
-            
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(52, 152, 219, ${p.alpha})`;
-            ctx.fill();
-        }
-        
-        // 绘制距离相近的节点连线
-        for (let i = 0; i < numNodes; i++) {
-            for (let j = i + 1; j < numNodes; j++) {
-                let p1 = nodes[i];
-                let p2 = nodes[j];
-                let dx = p1.x - p2.x;
-                let dy = p1.y - p2.y;
-                let dist = Math.sqrt(dx*dx + dy*dy);
-                
-                // 枢纽节点拥有更远的吸附连线距离
-                let maxDist = (p1.type === 1 || p2.type === 1) ? 200 : 120;
-                
-                if (dist < maxDist) {
-                    ctx.beginPath();
-                    ctx.moveTo(p1.x, p1.y);
-                    ctx.lineTo(p2.x, p2.y);
-                    // 距离越近，线条越清晰
-                    let opacity = (1 - dist/maxDist) * 0.25;
-                    ctx.strokeStyle = `rgba(52, 152, 219, ${opacity})`;
-                    ctx.lineWidth = 0.8;
-                    ctx.stroke();
-                }
-            }
-        }
-        requestAnimationFrame(draw);
-    }
-    draw();
+document.querySelector('.copy-citation').addEventListener('click', async function(){
+ try { await navigator.clipboard.writeText(document.querySelector('#BibTeX code').textContent); this.textContent='Copied'; }
+ catch { this.textContent='Select the citation below to copy'; }
 });
 </script>
+<link rel="stylesheet" href="static/css/editorial.css">
 </body>
 </html>
