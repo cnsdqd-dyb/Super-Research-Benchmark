@@ -16,15 +16,15 @@ configs:
 - config_name: questions
   data_files:
   - split: test
-    path: questions.jsonl
+    path: data/questions/test-*.parquet
 - config_name: reports
   data_files:
   - split: test
-    path: reports.jsonl
+    path: data/reports/test-*.parquet
 - config_name: systems
   data_files:
   - split: test
-    path: systems.jsonl
+    path: data/systems/test-*.parquet
 ---
 
 # Super Research Benchmark
@@ -45,6 +45,8 @@ This release contains:
 | `questions` | 300 | Task IDs, domains, English questions, and question hashes |
 | `reports` | 3,600 | Questions, system metadata, complete reports, inputs, and hashes |
 | `systems` | 12 | Provider, model, system ID, and report count |
+
+Each configuration is served from a compressed Parquet split for fast loading and browser preview. The corresponding JSONL files remain available in the repository as portable source records.
 
 ```python
 from datasets import load_dataset
