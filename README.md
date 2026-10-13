@@ -9,6 +9,7 @@
 <p>
   <a href="https://arxiv.org/abs/2603.00582"><img src="https://img.shields.io/badge/Paper-arXiv%3A2603.00582-b31b1b?style=for-the-badge" alt="Paper"></a>
   <a href="https://cnsdqd-dyb.github.io/Super-Research-Benchmark/"><img src="https://img.shields.io/badge/Project-Website-17456b?style=for-the-badge" alt="Project website"></a>
+  <a href="https://huggingface.co/datasets/FreeFrank/Super-Research-Benchmark"><img src="https://img.shields.io/badge/🤗_Hugging_Face-Dataset-ffd21e?style=for-the-badge" alt="Hugging Face dataset"></a>
   <a href="https://cnsdqd-dyb.github.io/Super-Research-Benchmark/ui.html"><img src="https://img.shields.io/badge/Visualizer-Open_Task_JSON-5b55d6?style=for-the-badge" alt="Task visualizer"></a>
   <a href="#dataset"><img src="https://img.shields.io/badge/Dataset-300_Questions-358a75?style=for-the-badge" alt="Dataset"></a>
   <a href="#agent-reports"><img src="https://img.shields.io/badge/Reports-3%2C600-f2a541?style=for-the-badge" alt="Agent reports"></a>
@@ -65,6 +66,7 @@ Super Research targets research behavior that combines several capabilities in o
 
 ## News
 
+- 🤗 **2026-10-13** — Published the benchmark on Hugging Face with loadable question, report, and system configurations.
 - 📦 **2026-10-13** — Released the 300-question English dataset, complete 300-task report collections for twelve systems, and offline dataset validation and report preparation tools.
 - 🧭 **2026-10-13** — Published the interactive task visualizer with JSON import, evidence-graph exploration, report inspection, and editable task export.
 - 📄 **2026-03-03** — Updated the [Super Research paper](https://arxiv.org/abs/2603.00582).
@@ -79,6 +81,7 @@ Super Research targets research behavior that combines several capabilities in o
 | Systems | Twelve systems and their recorded model names | [systems.json](data/systems.json) |
 | Report index | Task and system identifiers, report paths, and content hashes | [report_manifest.jsonl](data/report_manifest.jsonl) |
 | Full report collections | 300 original Markdown reports per system | [reports/](data/reports/) |
+| Hugging Face | Questions, systems, and complete reports as loadable configurations | [Dataset repository](https://huggingface.co/datasets/FreeFrank/Super-Research-Benchmark) |
 | Download | Questions and complete report archive | [Download ZIP](https://github.com/cnsdqd-dyb/Super-Research-Benchmark/releases/download/v2026.10.13/SuperResearch_300_EN_reports.zip) |
 
 Questions have stable IDs such as `1:1`, `2:1`, and `3:1`. Each record includes `question`, `domain`, `language`, and `question_sha256`.
@@ -103,6 +106,25 @@ questions = [json.loads(line) for line in Path("data/questions.jsonl").read_text
 print(questions[0]["task_id"])
 print(questions[0]["question"])
 ```
+
+Load the hosted dataset directly:
+
+```python
+from datasets import load_dataset
+
+questions = load_dataset(
+    "FreeFrank/Super-Research-Benchmark",
+    "questions",
+    split="test",
+)
+reports = load_dataset(
+    "FreeFrank/Super-Research-Benchmark",
+    "reports",
+    split="test",
+)
+```
+
+The Hugging Face release provides three configurations: `questions` with 300 rows, `reports` with 3,600 rows, and `systems` with 12 rows.
 
 ## Agent reports
 
@@ -228,6 +250,12 @@ python scripts/benchmark.py export --system system_01 --output outputs/alibaba.j
 python scripts/benchmark.py validate --input outputs/alibaba.jsonl --require-complete
 ```
 
+To prepare the flat JSONL files used by the Hugging Face release:
+
+```bash
+python scripts/benchmark.py hf-export --output-dir outputs/huggingface
+```
+
 These commands prepare and validate report collections. Metric assessment is described in [the testing guide](docs/TESTING.md); validation itself does not assign metric scores.
 
 ## Repository layout
@@ -246,6 +274,7 @@ docs/
 scripts/
   benchmark.py               # Offline dataset and report tools
 figures/                     # Project figures
+huggingface/README.md        # Hugging Face Dataset Card and configuration metadata
 index.html                   # Project website
 ui.html                      # Importable task visualizer
 annotation.json              # Complete visualization example

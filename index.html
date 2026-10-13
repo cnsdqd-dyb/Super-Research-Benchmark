@@ -131,7 +131,7 @@
 <link rel="stylesheet" href="static/css/editorial.css">
 <link rel="icon" href="favicon.svg" type="image/svg+xml"></head>
 <body>
-<nav class="research-nav" aria-label="Main navigation"><a class="wordmark" href="https://cnsdqd-dyb.github.io/">Yubo Dong <span>/ research</span></a><div><a href="#abstract">Overview</a><a href="#methodology">Method</a><a href="#leaderboard">Leaderboard</a><a href="#demo">Explore</a><a href="#BibTeX">Cite</a><a href="https://github.com/ZJU-HeheFan">Group</a></div></nav>
+<nav class="research-nav" aria-label="Main navigation"><a class="wordmark" href="https://cnsdqd-dyb.github.io/">Yubo Dong <span>/ research</span></a><div><a href="#abstract">Overview</a><a href="#dataset">Data</a><a href="#methodology">Method</a><a href="#leaderboard">Leaderboard</a><a href="#demo">Explore</a><a href="#BibTeX">Cite</a><a href="https://github.com/ZJU-HeheFan">Group</a></div></nav>
 
 <section class="hero">
   <div class="hero-body">
@@ -189,6 +189,12 @@
                 </a>
               </span>
               <span class="link-block">
+                <a href="https://huggingface.co/datasets/FreeFrank/Super-Research-Benchmark" class="external-link button is-normal is-rounded is-dark paper-btn">
+                  <span class="icon">🤗</span>
+                  <span>Hugging Face dataset</span>
+                </a>
+              </span>
+              <span class="link-block">
                 <a href="#leaderboard" class="external-link button is-normal is-rounded is-dark paper-btn">
                   <span class="icon"><i class="fas fa-trophy"></i></span>
                   <span>Leaderboard</span>
@@ -212,7 +218,7 @@
     </div>
   </div>
 <div class="research-meta"><span><strong>300</strong> expert-written questions</span><span><strong>Deep + wide</strong> evidence gathering</span><span><strong>Graph-anchored</strong> auditing</span></div>
-<p class="release-note">Public benchmark and project materials. arXiv preprint; this page does not claim conference acceptance or a complete agent implementation release.</p>
+<p class="release-note">Open benchmark release: 300 English questions, 12 research systems, 3,600 complete reports, offline tools, and an interactive task visualizer.</p>
 </section>
 
 
@@ -228,6 +234,50 @@
 .paper-btn { transition: transform 0.2s ease, box-shadow 0.2s ease !important; }
 .paper-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
 </style>
+
+
+<section class="section" id="dataset">
+  <div class="container is-max-desktop">
+    <div class="has-text-centered mb-6">
+      <p class="eyebrow">OPEN BENCHMARK RELEASE</p>
+      <h2 class="title is-3">Questions, reports, tools, and task-level exploration</h2>
+      <p class="subtitle is-6">Use the benchmark from Hugging Face, download the complete archive, inspect individual research tasks, or run the offline preparation and validation tools.</p>
+    </div>
+    <div class="columns is-multiline">
+      <div class="column is-3-desktop is-6-tablet">
+        <a class="box has-text-centered" href="https://huggingface.co/datasets/FreeFrank/Super-Research-Benchmark" style="height:100%; display:block; color:inherit;">
+          <div class="is-size-2 mb-3">🤗</div>
+          <h3 class="title is-5 mb-2">Hugging Face</h3>
+          <p class="is-size-7">Load questions, systems, and complete reports through three dataset configurations.</p>
+        </a>
+      </div>
+      <div class="column is-3-desktop is-6-tablet">
+        <a class="box has-text-centered" href="https://github.com/cnsdqd-dyb/Super-Research-Benchmark/releases/tag/v2026.10.13" style="height:100%; display:block; color:inherit;">
+          <div class="is-size-2 mb-3">📦</div>
+          <h3 class="title is-5 mb-2">Complete archive</h3>
+          <p class="is-size-7">Download all 300 questions, 3,600 Markdown reports, metadata, hashes, and tools.</p>
+        </a>
+      </div>
+      <div class="column is-3-desktop is-6-tablet">
+        <a class="box has-text-centered" href="ui.html" style="height:100%; display:block; color:inherit;">
+          <div class="is-size-2 mb-3">🧭</div>
+          <h3 class="title is-5 mb-2">Task visualizer</h3>
+          <p class="is-size-7">Import one task JSON and explore its report, evidence graph, sources, depth, and evaluation items.</p>
+        </a>
+      </div>
+      <div class="column is-3-desktop is-6-tablet">
+        <a class="box has-text-centered" href="https://github.com/cnsdqd-dyb/Super-Research-Benchmark#how-to-test" style="height:100%; display:block; color:inherit;">
+          <div class="is-size-2 mb-3">🧪</div>
+          <h3 class="title is-5 mb-2">Test your agent</h3>
+          <p class="is-size-7">Export reproducible subsets, prepare runs, and validate report collections with standard-library tools.</p>
+        </a>
+      </div>
+    </div>
+    <div class="notification is-light mt-5" style="border-left: 4px solid #3273dc;">
+      <strong>Latest release · 2026-10-13</strong> — The maintained English benchmark includes stable task IDs, content hashes, complete per-system report collections, and browser-based task inspection.
+    </div>
+  </div>
+</section>
 
 
 

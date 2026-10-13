@@ -106,6 +106,43 @@ def validate_visualization(path):
         'report_characters': len(data['final_report']),
     }
 
+def export_huggingface(output_dir):
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    question_rows = questions()
+    question_map = {q['task_id']: q for q in question_rows}
+    system_rows = json.loads((DATA / 'systems.json').read_text(encoding='utf-8'))
+    system_map = {s['system_id']: s for s in system_rows}
+    write_rows(output_dir / 'questions.jsonl', question_rows)
+    write_rows(output_dir / 'systems.jsonl', system_rows)
+    report_count = 0
+    with (output_dir / 'reports.jsonl').open('w', encoding='utf-8') as target:
+        for record in read_rows(DATA / 'report_manifest.jsonl'):
+            task = question_map[record['task_id']]
+            system = system_map[record['system_id']]
+            row = {
+                'task_id': record['task_id'],
+                'question': task['question'],
+                'domain': task['domain'],
+                'language': task['language'],
+                'question_sha256': task['question_sha256'],
+                'system_id': record['system_id'],
+                'provider': system['provider'],
+                'model': system['model'],
+                'report_text': (DATA / record['report_path']).read_text(encoding='utf-8-sig'),
+                'report_sha256': record['report_sha256'],
+                'report_input': record['report_input'],
+                'report_input_sha256': record['report_input_sha256'],
+            }
+            target.write(json.dumps(row, ensure_ascii=False, allow_nan=False) + '\n')
+            report_count += 1
+    return {
+        'output': str(output_dir),
+        'questions': len(question_rows),
+        'systems': len(system_rows),
+        'reports': report_count,
+    }
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
@@ -122,6 +159,8 @@ def main():
     validate_parser.add_argument('--require-complete', action='store_true')
     visual_parser = sub.add_parser('visualize-check')
     visual_parser.add_argument('--input', required=True, type=Path)
+    hf_parser = sub.add_parser('hf-export')
+    hf_parser.add_argument('--output-dir', required=True, type=Path)
     args = parser.parse_args()
     if args.command == 'verify':
         result = verify()
@@ -145,8 +184,10 @@ def main():
         result = {'exported_reports': len(output), 'output': str(args.output)}
     elif args.command == 'validate':
         result = validate(args.input, args.require_complete)
-    else:
+    elif args.command == 'visualize-check':
         result = validate_visualization(args.input)
+    else:
+        result = export_huggingface(args.output_dir)
     print(json.dumps(result, ensure_ascii=True, indent=2))
 
 if __name__ == '__main__':
