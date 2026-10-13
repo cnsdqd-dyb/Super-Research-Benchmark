@@ -1,6 +1,6 @@
 <div align="center">
 
-# Super Research Benchmark
+# 🔬 Super Research Benchmark
 
 ### Complex questions. Broad evidence. Deep reasoning.
 
@@ -17,13 +17,13 @@
 
 [Overview](#overview) · [News](#news) · [Dataset](#dataset) · [Reports](#agent-reports) · [Metrics](#evaluation-metrics) · [How to test](#how-to-test)
 
-<a href="figures/intro_01.png"><img src="figures/intro_01.png" width="100%" alt="Super Research combines research depth and breadth for complex questions"></a>
+<a href="figures/domain_wheel_300.png"><img src="figures/domain_wheel_300.png" width="100%" alt="Distribution of 300 Super Research questions across ten research domains"></a>
 
 </div>
 
 ## Overview
 
-Super Research studies autonomous research on complex, open-ended questions that require planning, gathering evidence across sources, and developing a coherent explanation. The benchmark covers **300 English questions across ten domains**, with a collection of **3,600 original reports from twelve research systems**.
+🔭 Super Research studies autonomous research on complex, open-ended questions that require planning, gathering evidence across sources, and developing a coherent explanation. The benchmark covers **300 English questions across ten domains**, with a collection of **3,600 original reports from twelve research systems**.
 
 Use the questions to test your research agent, inspect complete reports to compare research approaches, and describe system performance through five evaluation dimensions: **Coverage, Conditional Depth, Utility, Consistency, and Objectivity**.
 
@@ -31,12 +31,12 @@ This repository accompanies [*Super Research: Answering Highly Complex Questions
 
 ## News
 
-- **2026-10-13** — Released the maintained 300-question English dataset, complete 300-task report collections for twelve systems, and offline dataset validation and report preparation tools.
-- **2026-03-03** — Updated the [Super Research paper](https://arxiv.org/abs/2603.00582).
+- 📦 **2026-10-13** — Released the maintained 300-question English dataset, complete 300-task report collections for twelve systems, and offline dataset validation and report preparation tools.
+- 📄 **2026-03-03** — Updated the [Super Research paper](https://arxiv.org/abs/2603.00582).
 
 ## Dataset
 
-The dataset spans science and engineering, finance and business, medicine and health, society and humanities, arts and creativity, transportation and logistics, environment and energy, consumption and e-commerce, tourism and leisure, and interdisciplinary research.
+📚 The dataset spans science and engineering, finance and business, medicine and health, society and humanities, arts and creativity, transportation and logistics, environment and energy, consumption and e-commerce, tourism and leisure, and interdisciplinary research.
 
 | Resource | Contents | Link |
 |---|---|---|
@@ -59,7 +59,7 @@ print(questions[0]["question"])
 
 ## Agent reports
 
-Each included system has a complete collection of **300 reports**, organized by task ID. The report text and source links are preserved in Markdown.
+🤖 Each included system has a complete collection of **300 reports**, organized by task ID. The report text and source links are preserved in Markdown.
 
 | System | Recorded model | Reports |
 |---|---|---:|
@@ -92,11 +92,11 @@ python scripts/benchmark.py export --system system_01 --output outputs/alibaba.j
 | **Consistency** | Support along reference reasoning paths. |
 | **Objectivity** | Agreement of assessed claims with reference evidence. |
 
-The five dimensions are displayed separately. Consistency is retained as a path diagnostic and is excluded from the default aggregate. See [the metric guide](docs/METRICS.md) for definitions and [the testing guide](docs/TESTING.md) for input formats.
+📊 The five dimensions are displayed separately. Consistency is retained as a path diagnostic and is excluded from the default aggregate. See [the metric guide](docs/METRICS.md) for definitions and [the testing guide](docs/TESTING.md) for input formats.
 
 ## How to test
 
-The supplied tools run with **Python 3.10+** and use only the standard library.
+🧪 The supplied tools run with **Python 3.10+** and use only the standard library.
 
 ### 1. Get the dataset
 
@@ -165,7 +165,7 @@ index.html                   # Project website
 
 ## Citation
 
-If you use Super Research questions or reports in your work, please cite:
+📖 If you use Super Research questions or reports in your work, please cite:
 
 ```bibtex
 @article{superresearch2026,
