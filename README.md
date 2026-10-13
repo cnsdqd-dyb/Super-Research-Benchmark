@@ -15,9 +15,11 @@
   <a href="#citation"><img src="https://img.shields.io/badge/Cite-BibTeX-555555?style=for-the-badge" alt="Citation"></a>
 </p>
 
-[Overview](#overview) · [News](#news) · [Dataset](#dataset) · [Reports](#agent-reports) · [Metrics](#evaluation-metrics) · [How to test](#how-to-test)
+[Overview](#overview) · [News](#news) · [At a Glance](#benchmark-at-a-glance) · [Dataset](#dataset) · [Reports](#agent-reports) · [Metrics](#evaluation-metrics) · [How to test](#how-to-test)
 
-<a href="figures/domain_wheel_300.png"><img src="figures/domain_wheel_300.png" width="100%" alt="Distribution of 300 Super Research questions across ten research domains"></a>
+<a href="figures/data_dist_01.png"><img src="figures/data_dist_01.png" width="100%" alt="Super Research benchmark distribution, scale, graph composition, report statistics, and example tasks"></a>
+
+<sub>Benchmark composition: domain distribution, research scale, report statistics, graph structure, evaluation questions, and representative tasks.</sub>
 
 </div>
 
@@ -29,9 +31,40 @@ Use the questions to test your research agent, inspect complete reports to compa
 
 This repository accompanies [*Super Research: Answering Highly Complex Questions with Large Language Models through Super Deep and Super Wide Research*](https://arxiv.org/abs/2603.00582).
 
+## Benchmark at a Glance
+
+| | Scale | Description |
+|---|---:|---|
+| 🧩 **Research questions** | **300** | Expert-written, open-ended research tasks |
+| 🌐 **Research domains** | **10** | Technical, social, commercial, creative, medical, and interdisciplinary topics |
+| 🤖 **Research systems** | **12** | Complete report collections from twelve agent and model configurations |
+| 📄 **Agent reports** | **3,600** | 300 original Markdown reports for every included system |
+| 📊 **Evaluation dimensions** | **5** | Coverage, Conditional Depth, Utility, Consistency, and Objectivity |
+| 🔗 **Traceability** | **Per item** | Stable task IDs, question hashes, report hashes, and system identifiers |
+
+### Domain distribution
+
+| Domain | Questions | Domain | Questions |
+|---|---:|---|---:|
+| Science & Engineering | 53 | Medical & Health | 37 |
+| Finance & Business | 35 | Environment & Energy | 33 |
+| Society & Humanities | 32 | Consumption & E-commerce | 32 |
+| Transportation & Logistics | 22 | Arts & Creativity | 21 |
+| Comprehensive & Others | 18 | Tourism & Leisure | 17 |
+
+### What the benchmark tests
+
+Super Research targets research behavior that combines several capabilities in one task:
+
+1. **Problem decomposition** — turn a broad question into a structured research plan.
+2. **Wide evidence gathering** — retrieve diverse sources and competing perspectives.
+3. **Deep investigation** — follow mechanisms, conditions, uncertainties, and causal links beyond surface summaries.
+4. **Cross-source synthesis** — reconcile evidence and produce a coherent conclusion.
+5. **Report construction** — present a useful, traceable answer with citations and supporting detail.
+
 ## News
 
-- 📦 **2026-10-13** — Released the maintained 300-question English dataset, complete 300-task report collections for twelve systems, and offline dataset validation and report preparation tools.
+- 📦 **2026-10-13** — Released the 300-question English dataset, complete 300-task report collections for twelve systems, and offline dataset validation and report preparation tools.
 - 📄 **2026-03-03** — Updated the [Super Research paper](https://arxiv.org/abs/2603.00582).
 
 ## Dataset
@@ -47,6 +80,18 @@ This repository accompanies [*Super Research: Answering Highly Complex Questions
 | Download | Questions and complete report archive | [Download ZIP](https://github.com/cnsdqd-dyb/Super-Research-Benchmark/releases/download/v2026.10.13/SuperResearch_300_EN_reports.zip) |
 
 Questions have stable IDs such as `1:1`, `2:1`, and `3:1`. Each record includes `question`, `domain`, `language`, and `question_sha256`.
+
+### Question record
+
+```json
+{
+  "task_id": "1:1",
+  "language": "en",
+  "domain": "Science & Engineering",
+  "question": "...",
+  "question_sha256": "..."
+}
+```
 
 ```python
 import json
@@ -82,17 +127,36 @@ Exact model identifiers and system-to-folder mappings are in [systems.json](data
 python scripts/benchmark.py export --system system_01 --output outputs/alibaba.jsonl
 ```
 
+Every report can be traced through `report_manifest.jsonl` using:
+
+| Field | Purpose |
+|---|---|
+| `task_id` | Connects the report to one benchmark question |
+| `system_id` | Connects the report to one system configuration |
+| `provider` / `model` | Records the evaluated research system |
+| `report_path` | Locates the complete Markdown report |
+| `report_sha256` | Verifies report content |
+| `report_input_sha256` | Identifies the archived input associated with the report |
+
 ## Evaluation metrics
 
-| Dimension | What it measures |
-|---|---|
-| **Coverage** | Support for reference knowledge nodes in the report. |
-| **Conditional Depth** | Advancement of displayed arguments given their explicit premises and inference validity. |
-| **Utility** | Usefulness and actionable completeness for the research task. |
-| **Consistency** | Support along reference reasoning paths. |
-| **Objectivity** | Agreement of assessed claims with reference evidence. |
+| Dimension | What it measures | Main outputs |
+|---|---|---|
+| **Coverage** | How much of the task's reference knowledge is supported in the report. | Reference nodes, support decisions, evidence quotations |
+| **Conditional Depth** | How far the displayed argument advances from explicit premises through valid intermediate reasoning. | Advancement level, inference status, premise support |
+| **Utility** | How useful and complete the report is for the requested research objective. | Task requirements, actionable content, supporting evidence |
+| **Consistency** | How well supported the report is along reference reasoning paths. | Path nodes and constituent support judgments |
+| **Objectivity** | How assessed report claims agree with the task's reference evidence. | Claims, reference evidence, agreement judgments |
 
 📊 The five dimensions are displayed separately. Consistency is retained as a path diagnostic and is excluded from the default aggregate. See [the metric guide](docs/METRICS.md) for definitions and [the testing guide](docs/TESTING.md) for input formats.
+
+Conditional Depth preserves three pieces of information for every assessed conclusion:
+
+- **Advancement level (`A`)**: from restatement to multi-step comparison and decision.
+- **Inference status (`V`)**: valid, invalid, insufficient, or undetermined under the stated premises.
+- **Premise support (`S`)**: whether the premises are supplied, assumed, mixed, or unverified.
+
+This keeps reasoning complexity, logical validity, and evidence support visible as separate capabilities.
 
 ## How to test
 
