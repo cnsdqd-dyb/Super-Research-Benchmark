@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Research</title>
+    <title>Super Research Task Visualizer</title>
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -164,7 +164,7 @@
             </div>
             <div>
                 <h1 class="font-bold text-slate-800 leading-tight">Super Research</h1>
-                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Turbo Batch</p>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Task Visualizer</p>
             </div>
         </div>
 
@@ -176,8 +176,11 @@
                     <i :class="t.icon"></i> {{ t.label }}
                 </button>
             </div>
+            <button @click="loadExample" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm flex items-center gap-2">
+                <i class="fa-regular fa-circle-play text-indigo-600"></i> Load Example
+            </button>
             <label class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-bold cursor-pointer transition shadow flex items-center gap-2">
-                <i class="fa-solid fa-upload"></i> Load JSON
+                <i class="fa-solid fa-upload"></i> Import Task JSON
                 <input type="file" class="hidden" @change="loadJson" accept=".json">
             </label>
         </div>
@@ -230,9 +233,11 @@
     </aside>
     
     <aside class="glass-panel flex items-center justify-center text-slate-400" v-else>
-        <div class="text-center">
-            <i class="fa-solid fa-cloud-arrow-up text-4xl mb-3 opacity-20"></i>
-            <p class="text-xs font-medium">Waiting for data...</p>
+        <div class="text-center px-5">
+            <i class="fa-solid fa-diagram-project text-4xl mb-3 text-indigo-200"></i>
+            <p class="text-sm font-bold text-slate-700">Open a research task</p>
+            <p class="text-xs leading-5 mt-2">Import a compatible JSON file or load the included example.</p>
+            <button @click="loadExample" class="mt-4 px-3 py-2 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-bold hover:bg-indigo-100 transition">Load Example</button>
         </div>
     </aside>
 
@@ -240,7 +245,12 @@
         
         <div v-show="currentTab === 'report'" class="h-full overflow-y-auto p-8 bg-white">
             <div v-if="!reportHtml" class="h-full flex items-center justify-center text-slate-400">
-                <p>No report loaded</p>
+                <div class="text-center max-w-md">
+                    <i class="fa-regular fa-file-code text-5xl text-indigo-200 mb-5"></i>
+                    <h2 class="text-xl font-bold text-slate-700 mb-2">Explore one task at a time</h2>
+                    <p class="text-sm leading-6 mb-5">Import a task JSON to inspect its report, evidence graph, source domains, reasoning depth, and evaluation items.</p>
+                    <button @click="loadExample" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-xs font-bold hover:bg-indigo-700 transition shadow">Load Included Example</button>
+                </div>
             </div>
             <article v-else class="neurips-report" 
                      v-html="reportHtml" @mouseover="onHover"></article>
@@ -608,6 +618,15 @@ createApp({
         });
 
         // --- Core: Load ---
+        const validateTaskData = (data) => {
+            if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('Expected one JSON object.');
+            if (!data.global_graph || !Array.isArray(data.global_graph.nodes) || !Array.isArray(data.global_graph.links)) {
+                throw new Error('Missing global_graph.nodes or global_graph.links.');
+            }
+            if (typeof data.final_report !== 'string') throw new Error('Missing final_report text.');
+            return data;
+        };
+
         const loadJson = (e) => {
             const file = e.target.files[0];
             if(!file) return;
@@ -616,11 +635,29 @@ createApp({
             const r = new FileReader();
             r.onload = (evt) => {
                 try {
-                    const data = JSON.parse(evt.target.result);
-                    setTimeout(() => { processData(data); isLoading.value = false; }, 50);
+                    const data = validateTaskData(JSON.parse(evt.target.result));
+                    processData(data);
+                    isLoading.value = false;
                 } catch(err) { alert("JSON Error: "+err.message); isLoading.value = false; }
             };
+            r.onerror = () => { alert('Unable to read this file.'); isLoading.value = false; };
             r.readAsText(file);
+            e.target.value = '';
+        };
+
+        const loadExample = async () => {
+            isLoading.value = true;
+            loadingStatus.value = 'Loading Example...';
+            try {
+                const response = await fetch('annotation.json');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                processData(validateTaskData(await response.json()));
+            } catch (err) {
+                alert('Example Load Error: ' + err.message);
+            } finally {
+                isLoading.value = false;
+                loadingStatus.value = 'Processing Data...';
+            }
         };
 
         const processData = (data) => {
@@ -1162,7 +1199,15 @@ OUTPUT JSON: { "scores": [ { "id": 0, "score": number } ] }`;
         });
 
         const saveData = () => { rawData.value.final_report = editableReport.value; rawData.value.merged_quiz = quizList.value; renderReport(editableReport.value); alert("Saved!"); };
-        const exportData = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(rawData.value,null,2)],{type:'application/json'})); a.download = 'deep_research_v49.json'; a.click(); };
+        const exportData = () => {
+            if (!rawData.value) return;
+            const url = URL.createObjectURL(new Blob([JSON.stringify(rawData.value,null,2)],{type:'application/json'}));
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'super_research_task.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        };
         const addQuiz = () => quizList.value.push({question:'New Question', answer:'', depth_metric:1, type:'mcq'});
 
         watch(() => graphConfig.value.focusMain, () => { if(currentTab.value === 'graph') initGraph(); });
@@ -1315,7 +1360,7 @@ OUTPUT JSON: { "scores": [ { "id": 0, "score": number } ] }`;
 
         return {
             // ... (保留你原有的所有变量) ...
-            currentTab, tabs, loadJson, rawData, metrics, reportHtml, graphData, 
+            currentTab, tabs, loadJson, loadExample, rawData, metrics, reportHtml, graphData,
             selectedNode, upstream, editableReport, quizList, isLoading, loadingStatus, progress,
             graphConfig, liveMonitor, 
             
@@ -1325,7 +1370,7 @@ OUTPUT JSON: { "scores": [ { "id": 0, "score": number } ] }`;
             
             // ... (保留原有的 Helper 函数) ...
             getNodeClass, getNodeBarColor, getNodeBadgeClass, getNodeDot,
-            cleanUrl, onHover, formatNumber, saveData:()=>{alert('Saved!')}, exportData:()=>{alert('Exported!')}, addQuiz:()=>{}, runEval
+            cleanUrl, onHover, formatNumber, saveData, exportData, addQuiz, runEval
         };
     }
 }).mount('#app');

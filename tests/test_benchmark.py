@@ -54,5 +54,17 @@ class SubmissionValidation(unittest.TestCase):
         rows = [{**self.row, 'task_id': q['task_id'], 'question_sha256': q['question_sha256']} for q in benchmark.questions()]
         self.assertEqual(self.check(rows, complete=True)['validated_reports'], 300)
 
+    def test_visualization_example(self):
+        result = benchmark.validate_visualization(ROOT / 'annotation.json')
+        self.assertTrue(result['valid'])
+        self.assertGreater(result['nodes'], 0)
+        self.assertGreater(result['links'], 0)
+
+    def test_visualization_rejects_missing_graph(self):
+        path = Path(self.directory.name) / 'task.json'
+        path.write_text(json.dumps({'final_report': 'Report'}), encoding='utf-8')
+        with self.assertRaisesRegex(ValueError, 'global_graph'):
+            benchmark.validate_visualization(path)
+
 if __name__ == '__main__':
     unittest.main()

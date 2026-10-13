@@ -9,13 +9,14 @@
 <p>
   <a href="https://arxiv.org/abs/2603.00582"><img src="https://img.shields.io/badge/Paper-arXiv%3A2603.00582-b31b1b?style=for-the-badge" alt="Paper"></a>
   <a href="https://cnsdqd-dyb.github.io/Super-Research-Benchmark/"><img src="https://img.shields.io/badge/Project-Website-17456b?style=for-the-badge" alt="Project website"></a>
+  <a href="https://cnsdqd-dyb.github.io/Super-Research-Benchmark/ui.html"><img src="https://img.shields.io/badge/Visualizer-Open_Task_JSON-5b55d6?style=for-the-badge" alt="Task visualizer"></a>
   <a href="#dataset"><img src="https://img.shields.io/badge/Dataset-300_Questions-358a75?style=for-the-badge" alt="Dataset"></a>
   <a href="#agent-reports"><img src="https://img.shields.io/badge/Reports-3%2C600-f2a541?style=for-the-badge" alt="Agent reports"></a>
   <a href="#how-to-test"><img src="https://img.shields.io/badge/Quick_Start-Test_Your_Agent-6a54a3?style=for-the-badge" alt="How to test"></a>
   <a href="#citation"><img src="https://img.shields.io/badge/Cite-BibTeX-555555?style=for-the-badge" alt="Citation"></a>
 </p>
 
-[Overview](#overview) · [News](#news) · [At a Glance](#benchmark-at-a-glance) · [Dataset](#dataset) · [Reports](#agent-reports) · [Metrics](#evaluation-metrics) · [How to test](#how-to-test)
+[Overview](#overview) · [News](#news) · [At a Glance](#benchmark-at-a-glance) · [Dataset](#dataset) · [Reports](#agent-reports) · [Visualizer](#interactive-task-visualizer) · [Metrics](#evaluation-metrics) · [How to test](#how-to-test)
 
 <a href="figures/data_dist_01.png"><img src="figures/data_dist_01.png" width="100%" alt="Super Research benchmark distribution, scale, graph composition, report statistics, and example tasks"></a>
 
@@ -65,6 +66,7 @@ Super Research targets research behavior that combines several capabilities in o
 ## News
 
 - 📦 **2026-10-13** — Released the 300-question English dataset, complete 300-task report collections for twelve systems, and offline dataset validation and report preparation tools.
+- 🧭 **2026-10-13** — Published the interactive task visualizer with JSON import, evidence-graph exploration, report inspection, and editable task export.
 - 📄 **2026-03-03** — Updated the [Super Research paper](https://arxiv.org/abs/2603.00582).
 
 ## Dataset
@@ -137,6 +139,25 @@ Every report can be traced through `report_manifest.jsonl` using:
 | `report_path` | Locates the complete Markdown report |
 | `report_sha256` | Verifies report content |
 | `report_input_sha256` | Identifies the archived input associated with the report |
+
+## Interactive task visualizer
+
+🧭 Open the **[hosted task visualizer](https://cnsdqd-dyb.github.io/Super-Research-Benchmark/ui.html)** to inspect a complete research task in the browser. Import a compatible JSON file and move between four linked views:
+
+<a href="figures/ui_2.png"><img src="figures/ui_2.png" width="100%" alt="Super Research interactive evidence graph and report inspector"></a>
+
+- **Report** — read the final Markdown report and inspect linked evidence.
+- **Graph** — explore facts, sources, intermediate conclusions, and global conclusions.
+- **Editor** — revise report text or evaluation items and export the updated JSON.
+- **Evaluate** — inspect compatible task-level evaluation output.
+
+The repository includes [`annotation.json`](annotation.json) as a complete example. Validate the format before opening it:
+
+```bash
+python scripts/benchmark.py visualize-check --input annotation.json
+```
+
+See the [visualizer guide](docs/VISUALIZER.md) for the JSON schema, a minimal example, local serving instructions, and view descriptions.
 
 ## Evaluation metrics
 
@@ -221,10 +242,13 @@ data/
 docs/
   METRICS.md                 # Five evaluation dimensions
   TESTING.md                 # Report format and testing workflow
+  VISUALIZER.md              # Task visualizer JSON format and usage
 scripts/
   benchmark.py               # Offline dataset and report tools
 figures/                     # Project figures
 index.html                   # Project website
+ui.html                      # Importable task visualizer
+annotation.json              # Complete visualization example
 ```
 
 ## Citation

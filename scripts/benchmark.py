@@ -75,6 +75,37 @@ def validate(path, complete=False):
         raise ValueError('Complete validation requires 300 reports per system')
     return {'validated_reports': len(rows), 'tasks_per_system': dict(per_system)}
 
+def validate_visualization(path):
+    data = json.loads(Path(path).read_text(encoding='utf-8-sig'))
+    if not isinstance(data, dict):
+        raise ValueError('Visualization input must be one JSON object')
+    graph = data.get('global_graph')
+    if not isinstance(graph, dict) or not isinstance(graph.get('nodes'), list) or not isinstance(graph.get('links'), list):
+        raise ValueError('Visualization input requires global_graph.nodes and global_graph.links')
+    if not isinstance(data.get('final_report'), str) or not data['final_report'].strip():
+        raise ValueError('Visualization input requires a nonempty final_report')
+    node_ids = []
+    for index, node in enumerate(graph['nodes'], 1):
+        if not isinstance(node, dict) or not isinstance(node.get('id'), str) or not node['id'].strip():
+            raise ValueError(f'Invalid graph node at position {index}')
+        node_ids.append(node['id'])
+    if len(node_ids) != len(set(node_ids)):
+        raise ValueError('Graph node IDs must be unique')
+    known = set(node_ids)
+    for index, link in enumerate(graph['links'], 1):
+        if not isinstance(link, dict) or link.get('source') not in known or link.get('target') not in known:
+            raise ValueError(f'Invalid graph link at position {index}')
+    quiz = data.get('merged_quiz', [])
+    if not isinstance(quiz, list):
+        raise ValueError('merged_quiz must be an array when present')
+    return {
+        'valid': True,
+        'nodes': len(node_ids),
+        'links': len(graph['links']),
+        'evaluation_items': len(quiz),
+        'report_characters': len(data['final_report']),
+    }
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
@@ -89,6 +120,8 @@ def main():
     validate_parser = sub.add_parser('validate')
     validate_parser.add_argument('--input', required=True, type=Path)
     validate_parser.add_argument('--require-complete', action='store_true')
+    visual_parser = sub.add_parser('visualize-check')
+    visual_parser.add_argument('--input', required=True, type=Path)
     args = parser.parse_args()
     if args.command == 'verify':
         result = verify()
@@ -110,8 +143,10 @@ def main():
             output.append({'task_id': r['task_id'], 'system_id': r['system_id'], 'question_sha256': qs[r['task_id']]['question_sha256'], 'report_text': (DATA / r['report_path']).read_text(encoding='utf-8-sig'), 'model': r['model'], 'report_input': r['report_input'], 'report_input_sha256': r['report_input_sha256']})
         write_rows(args.output, output)
         result = {'exported_reports': len(output), 'output': str(args.output)}
-    else:
+    elif args.command == 'validate':
         result = validate(args.input, args.require_complete)
+    else:
+        result = validate_visualization(args.input)
     print(json.dumps(result, ensure_ascii=True, indent=2))
 
 if __name__ == '__main__':
