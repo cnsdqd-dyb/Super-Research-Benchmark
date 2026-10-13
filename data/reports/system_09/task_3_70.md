@@ -1,0 +1,37 @@
+# Deep Research Report: openai/o4-mini-deep-research
+**Status:** ✅ Success | **Attempts:** 1/5 | **Run ID:** bc9c079c | **Time:** 259.57s | **Cost:** $0.82111
+--------------------------------------------------------------------------------
+
+**Stepped (or tiered) pricing** means the unit price changes at certain quantity or usage thresholds; these thresholds are the “discount critical points.”  To **optimize** them, one writes the seller’s total profit (or revenue minus cost) as a function of the breakpoints and prices for each tier, and then solves for the maximum.  In practice this means equating the **marginal** benefit of extending a tier to the marginal cost.  Formally, you set up the profit 
+\[
+\pi=\sum_{i}(P_i\,Q_i) - C(Q_{\max}),
+\] 
+with \(Q_i\) the quantity sold in tier \(i\).  Taking derivatives ∂π/∂(breakpoint) = 0 gives the first-order conditions.  For example, with two price-blocks under linear demand \(P=a-bQ\) and constant marginal cost \(c\), the FOCs are: 
+\[a-2bQ_1 + bQ_2 = 0,\quad a-2bQ_2 - c=0.\] 
+Solving these yields 
+\[
+Q_2^*=\frac{a-c}{2b},\qquad Q_1^*=\frac{a-c}{4b},
+\] 
+so the first threshold is half the second ([economics.stackexchange.com](https://economics.stackexchange.com/questions/537/monopoly-firms-block-pricing-strategy-making-max-profit#:~:text=%28a,These%20are%20the%20profit%20maximizing)).  In other words, one sets each “knee” so that the **lost revenue** from the lower price equals the **gained revenue** from selling more units.  In general (nonlinear demand), one must solve the system of ∂π/∂(thresholds)=0 simultaneously (often numerically or via dynamic programming). 
+
+Put simply, the critical discount points are chosen where **marginal revenue equals marginal cost** across tiers ([economics.stackexchange.com](https://economics.stackexchange.com/questions/537/monopoly-firms-block-pricing-strategy-making-max-profit#:~:text=%28a,These%20are%20the%20profit%20maximizing)) – this assures small shifts in a breakpoint don’t increase profit.  Practitioners often proceed iteratively or by simulation: choose candidate breakpoints, compute profit, and adjust until the “gain from increasing a tier equals the loss from lowering its price.”  For example, in a simple calculation one finds that the optimal higher-tier price solves the usual MR=MC condition, and then the lower-tier breakpoint is set by the balance equation from the first-order condition ([economics.stackexchange.com](https://economics.stackexchange.com/questions/537/monopoly-firms-block-pricing-strategy-making-max-profit#:~:text=%28a,These%20are%20the%20profit%20maximizing)). 
+
+In practice, only a few tiers are typically needed for near-optimal results.  Studies of real pricing data show that beyond about 3–4 well-placed breakpoints, extra tiers yield diminishing benefit.  For instance, analysis of ISP (Internet service provider) pricing built on cost-and-demand data found that structuring contracts into just *three or four* usage tiers captured essentially all of the profit, and finer granularity was unnecessary ([arxiv.org](https://arxiv.org/abs/1112.3740#:~:text=increases%20in%20ISP%20profit%20with,optimal%20profit%20for%20the%20ISP)).  In other words, optimal tiering usually comes down to identifying a few “critical” volume levels (often aligned with natural demand jumps or WTP clusters) and setting prices so that the incremental revenue at those points just equals incremental cost. 
+
+**Summary:**  To optimize stepped pricing, write profit as a piecewise function of the thresholds and solve the first-order (marginal) conditions for each breakpoint.  Equivalently, adjust each discount point until the extra volume it induces yields exactly zero net profit gain.  The result is that each tier boundary is set where marginal revenue “kinks” to match marginal cost (as illustrated in the linear example above ([economics.stackexchange.com](https://economics.stackexchange.com/questions/537/monopoly-firms-block-pricing-strategy-making-max-profit#:~:text=%28a,These%20are%20the%20profit%20maximizing))).  Empirical and theoretical work shows that only a few such optimized breakpoints are needed – for example 3–4 tiers is often nearly optimal ([arxiv.org](https://arxiv.org/abs/1112.3740#:~:text=increases%20in%20ISP%20profit%20with,optimal%20profit%20for%20the%20ISP)). 
+
+**Sources:** The mathematical approach (setting ∂profit/∂threshold = 0) is standard in nonlinear pricing theory ([economics.stackexchange.com](https://economics.stackexchange.com/questions/537/monopoly-firms-block-pricing-strategy-making-max-profit#:~:text=%28a,These%20are%20the%20profit%20maximizing)).  For concrete formulas, see the above example under linear demand.  Empirical analyses likewise confirm that a small number of tiers (well-calculated) capture most of the benefit ([arxiv.org](https://arxiv.org/abs/1112.3740#:~:text=increases%20in%20ISP%20profit%20with,optimal%20profit%20for%20the%20ISP)).  
+
+
+
+## Annotations
+{'type': 'url_citation', 'url_citation': {'end_index': 1104, 'start_index': 913, 'title': "Monopoly firm's block pricing strategy making max. profit - Economics Stack Exchange", 'url': 'https://economics.stackexchange.com/questions/537/monopoly-firms-block-pricing-strategy-making-max-profit#:~:text=%28a,These%20are%20the%20profit%20maximizing'}}
+{'type': 'url_citation', 'url_citation': {'end_index': 1698, 'start_index': 1507, 'title': "Monopoly firm's block pricing strategy making max. profit - Economics Stack Exchange", 'url': 'https://economics.stackexchange.com/questions/537/monopoly-firms-block-pricing-strategy-making-max-profit#:~:text=%28a,These%20are%20the%20profit%20maximizing'}}
+{'type': 'url_citation', 'url_citation': {'end_index': 2368, 'start_index': 2177, 'title': "Monopoly firm's block pricing strategy making max. profit - Economics Stack Exchange", 'url': 'https://economics.stackexchange.com/questions/537/monopoly-firms-block-pricing-strategy-making-max-profit#:~:text=%28a,These%20are%20the%20profit%20maximizing'}}
+{'type': 'url_citation', 'url_citation': {'end_index': 2942, 'start_index': 2816, 'title': 'Modeling Tiered Pricing in the Internet Transit Market', 'url': 'https://arxiv.org/abs/1112.3740#:~:text=increases%20in%20ISP%20profit%20with,optimal%20profit%20for%20the%20ISP'}}
+{'type': 'url_citation', 'url_citation': {'end_index': 3814, 'start_index': 3623, 'title': "Monopoly firm's block pricing strategy making max. profit - Economics Stack Exchange", 'url': 'https://economics.stackexchange.com/questions/537/monopoly-firms-block-pricing-strategy-making-max-profit#:~:text=%28a,These%20are%20the%20profit%20maximizing'}}
+{'type': 'url_citation', 'url_citation': {'end_index': 4083, 'start_index': 3957, 'title': 'Modeling Tiered Pricing in the Internet Transit Market', 'url': 'https://arxiv.org/abs/1112.3740#:~:text=increases%20in%20ISP%20profit%20with,optimal%20profit%20for%20the%20ISP'}}
+{'type': 'url_citation', 'url_citation': {'end_index': 4390, 'start_index': 4199, 'title': "Monopoly firm's block pricing strategy making max. profit - Economics Stack Exchange", 'url': 'https://economics.stackexchange.com/questions/537/monopoly-firms-block-pricing-strategy-making-max-profit#:~:text=%28a,These%20are%20the%20profit%20maximizing'}}
+{'type': 'url_citation', 'url_citation': {'end_index': 4697, 'start_index': 4571, 'title': 'Modeling Tiered Pricing in the Internet Transit Market', 'url': 'https://arxiv.org/abs/1112.3740#:~:text=increases%20in%20ISP%20profit%20with,optimal%20profit%20for%20the%20ISP'}}
+
+## Sources

@@ -1,0 +1,15 @@
+# Deep Research Report: openai/o4-mini-deep-research
+**Status:** ✅ Success | **Attempts:** 1/5 | **Run ID:** 98e6f888 | **Time:** 231.39s | **Cost:** $1.06841
+--------------------------------------------------------------------------------
+
+The key is to use a fully local, event‐driven update rule so that all synapses can train in parallel.  In practice neuromorphic chips use Spike-Timing-Dependent Plasticity (STDP) – often with enhancements like pair‐based or power‐law STDP – as the synaptic update rule.  Because each synapse updates its weight autonomously (based only on local spike timing), the learning naturally runs in parallel and is very energy‐efficient.  In effect, STDP‐type rules co‐optimize accuracy and power: they only update on sparse events and avoid extra timing circuitry, yet still achieve high learning accuracy despite device variation ([patents.google.com](https://patents.google.com/patent/US20230385619A1/en#:~:text=dependent,consumption%20associated%20with%20timing%20schemes)) ([arxiv.org](https://arxiv.org/abs/2408.07150#:~:text=combined%20learning%20method%20integrates%20Pair,learning%20parameters%20while%20maintaining%20accuracy)).
+
+**Answer:**  A local, event-driven STDP-type plasticity rule (e.g. pair-based or power-law STDP) allows in-parallel weight updates that jointly optimize energy use and accuracy under device/power constraints ([patents.google.com](https://patents.google.com/patent/US20230385619A1/en#:~:text=dependent,consumption%20associated%20with%20timing%20schemes)) ([arxiv.org](https://arxiv.org/abs/2408.07150#:~:text=combined%20learning%20method%20integrates%20Pair,learning%20parameters%20while%20maintaining%20accuracy)).
+
+## Annotations
+{'type': 'url_citation', 'url_citation': {'end_index': 769, 'start_index': 624, 'title': 'US20230385619A1 - Neuromorphic chip for updating precise synaptic weight values - Google Patents', 'url': 'https://patents.google.com/patent/US20230385619A1/en#:~:text=dependent,consumption%20associated%20with%20timing%20schemes'}}
+{'type': 'url_citation', 'url_citation': {'end_index': 929, 'start_index': 770, 'title': 'The Potential of Combined Learning Strategies to Enhance Energy Efficiency of Spiking Neuromorphic Systems', 'url': 'https://arxiv.org/abs/2408.07150#:~:text=combined%20learning%20method%20integrates%20Pair,learning%20parameters%20while%20maintaining%20accuracy'}}
+{'type': 'url_citation', 'url_citation': {'end_index': 1285, 'start_index': 1140, 'title': 'US20230385619A1 - Neuromorphic chip for updating precise synaptic weight values - Google Patents', 'url': 'https://patents.google.com/patent/US20230385619A1/en#:~:text=dependent,consumption%20associated%20with%20timing%20schemes'}}
+{'type': 'url_citation', 'url_citation': {'end_index': 1445, 'start_index': 1286, 'title': 'The Potential of Combined Learning Strategies to Enhance Energy Efficiency of Spiking Neuromorphic Systems', 'url': 'https://arxiv.org/abs/2408.07150#:~:text=combined%20learning%20method%20integrates%20Pair,learning%20parameters%20while%20maintaining%20accuracy'}}
+
+## Sources

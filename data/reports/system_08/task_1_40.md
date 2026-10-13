@@ -1,0 +1,21 @@
+# Deep Research Report: openai/o3-deep-research
+**Status:** ✅ Success | **Attempts:** 1/5 | **Run ID:** 020b471b | **Time:** 78.90s | **Cost:** $0.62093
+--------------------------------------------------------------------------------
+
+## Immune Checkpoints as a Balancing Mechanism
+
+The body’s *immune checkpoints* act as natural brakes on T cells, balancing strong anti-tumor immune activation with the need to avoid attacking healthy tissue. These checkpoints are co-inhibitory receptors (like **CTLA-4** and **PD-1**) that counteract co-stimulatory signals, fine-tuning the immune response to maintain self-tolerance ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC5827159/#:~:text=regulate%20T%20cell%20activation%20by,immune%20response%20and%20preventing%20autoimmunity)). Under normal conditions, engagement of these inhibitory pathways dampens T-cell activity and **prevents autoimmunity** ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC5827159/#:~:text=regulate%20T%20cell%20activation%20by,immune%20response%20and%20preventing%20autoimmunity)). 
+
+In **immune checkpoint inhibitor** (ICI) therapy, antibodies block these inhibitory receptors, releasing the brakes on the immune system. This unleashes a more **potent anti-tumor T-cell response** (allowing tumor-specific T cells to attack cancer cells) ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC5827159/#:~:text=By%20exploiting%20the%20activation%20of,1%20%E2%80%93%2011)). However, removing these checkpoints can also **“unrestrain” the immune response**, potentially causing T cells to react against healthy organs ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC5827159/#:~:text=Nevertheless%2C%20immune%20checkpoint%20therapy%20has,3%20%E2%80%93%2012)). In other words, **checkpoint pathways like PD-1/PD-L1 and CTLA-4 normally balance effective tumor immunity with the risk of autoimmunity** ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC5827159/#:~:text=proteins%20expressed%20on%20immune%20cells,immune%20response%20and%20preventing%20autoimmunity)) ([pmc.ncbi.nlm.nih.gov](https://pmc.ncbi.nlm.nih.gov/articles/PMC5827159/#:~:text=Nevertheless%2C%20immune%20checkpoint%20therapy%20has,3%20%E2%80%93%2012)). By carefully modulating these pathways, researchers aim to maximize tumor destruction while minimizing immune-related adverse events (autoimmune side effects). 
+
+
+
+## Annotations
+{'type': 'url_citation', 'url_citation': {'end_index': 558, 'start_index': 385, 'title': 'Checks and Balances in Autoimmune Vasculitis - PMC', 'url': 'https://pmc.ncbi.nlm.nih.gov/articles/PMC5827159/#:~:text=regulate%20T%20cell%20activation%20by,immune%20response%20and%20preventing%20autoimmunity'}}
+{'type': 'url_citation', 'url_citation': {'end_index': 852, 'start_index': 679, 'title': 'Checks and Balances in Autoimmune Vasculitis - PMC', 'url': 'https://pmc.ncbi.nlm.nih.gov/articles/PMC5827159/#:~:text=regulate%20T%20cell%20activation%20by,immune%20response%20and%20preventing%20autoimmunity'}}
+{'type': 'url_citation', 'url_citation': {'end_index': 1253, 'start_index': 1111, 'title': 'Checks and Balances in Autoimmune Vasculitis - PMC', 'url': 'https://pmc.ncbi.nlm.nih.gov/articles/PMC5827159/#:~:text=By%20exploiting%20the%20activation%20of,1%20%E2%80%93%2011'}}
+{'type': 'url_citation', 'url_citation': {'end_index': 1554, 'start_index': 1398, 'title': 'Checks and Balances in Autoimmune Vasculitis - PMC', 'url': 'https://pmc.ncbi.nlm.nih.gov/articles/PMC5827159/#:~:text=Nevertheless%2C%20immune%20checkpoint%20therapy%20has,3%20%E2%80%93%2012'}}
+{'type': 'url_citation', 'url_citation': {'end_index': 1873, 'start_index': 1695, 'title': 'Checks and Balances in Autoimmune Vasculitis - PMC', 'url': 'https://pmc.ncbi.nlm.nih.gov/articles/PMC5827159/#:~:text=proteins%20expressed%20on%20immune%20cells,immune%20response%20and%20preventing%20autoimmunity'}}
+{'type': 'url_citation', 'url_citation': {'end_index': 2030, 'start_index': 1874, 'title': 'Checks and Balances in Autoimmune Vasculitis - PMC', 'url': 'https://pmc.ncbi.nlm.nih.gov/articles/PMC5827159/#:~:text=Nevertheless%2C%20immune%20checkpoint%20therapy%20has,3%20%E2%80%93%2012'}}
+
+## Sources

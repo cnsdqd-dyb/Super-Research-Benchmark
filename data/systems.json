@@ -1,0 +1,74 @@
+[
+  {
+    "system_id": "system_01",
+    "provider": "Alibaba",
+    "model": "alibaba/tongyi-deepresearch-30b-a3b",
+    "reports": 300
+  },
+  {
+    "system_id": "system_02",
+    "provider": "Anthropic",
+    "model": "anthropic/claude-3.5-sonnet",
+    "reports": 300
+  },
+  {
+    "system_id": "system_03",
+    "provider": "Deepseek",
+    "model": "deepseek/deepseek-r1",
+    "reports": 300
+  },
+  {
+    "system_id": "system_04",
+    "provider": "Google",
+    "model": "deep-research-pro-preview-12-2025",
+    "reports": 300
+  },
+  {
+    "system_id": "system_05",
+    "provider": "Meta-llama",
+    "model": "meta-llama/llama-3.3-70b-instruct",
+    "reports": 300
+  },
+  {
+    "system_id": "system_06",
+    "provider": "Minimax",
+    "model": "minimax/minimax-m2.1",
+    "reports": 300
+  },
+  {
+    "system_id": "system_07",
+    "provider": "Moonshot",
+    "model": "moonshot/kimi-k2-turbo-preview-web-search",
+    "reports": 300
+  },
+  {
+    "system_id": "system_08",
+    "provider": "OpenAI-o3",
+    "model": "openai/o3-deep-research",
+    "reports": 300
+  },
+  {
+    "system_id": "system_09",
+    "provider": "OpenAI-o4",
+    "model": "openai/o4-mini-deep-research",
+    "reports": 300
+  },
+  {
+    "system_id": "system_10",
+    "provider": "Perplexity",
+    "model": "perplexity/sonar-deep-research",
+    "reports": 300
+  },
+  {
+    "system_id": "system_11",
+    "provider": "Qwen",
+    "model": "qwen/qwen-2.5-72b-instruct",
+    "reports": 300
+  },
+  {
+    "system_id": "system_12",
+    "provider": "xAI",
+    "model": "grok-4-1-fast-web-search",
+    "reports": 300
+  }
+]
